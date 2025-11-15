@@ -1,0 +1,108 @@
+.auth-title {
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 28px;
+  color: #f8fafc;
+}
+
+
+/* form layout */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+
+.input-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-block label {
+  color: #e5e7eb;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+/* white-ish glass inputs inside the card */
+.input-block input {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+
+  font-size: 15px;
+  color: #f1f5f9;
+
+  transition: 0.25s ease;
+}
+
+
+.input-block input::placeholder {
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.input-block input:focus {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+  outline: none;
+}
+
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--primary);
+}
+
+/* Button: same color family (blue) */
+.auth-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
+  transition: 0.25s ease;
+}
+
+.auth-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45);
+}
+.auth-footer {
+  margin-top: 8px;
+  text-align: center;
+  color: #e5e7eb;
+  font-size: 14px;
+}
+
+.auth-footer a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}

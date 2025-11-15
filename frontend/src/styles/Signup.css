@@ -1,0 +1,6 @@
+@import "./Login.css";
+
+/* keep same blue button, or make slightly lighter if you want */
+.auth-btn.signup {
+  background: linear-gradient(135deg, var(--primary), #60a5fa);
+}
