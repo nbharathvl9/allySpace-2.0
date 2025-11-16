@@ -31,7 +31,7 @@ export default function YourSubprojectsModal({ isOpen, onClose }) {
           </p>
         ) : (
           subteams.map((st) => (
-            <div key={st._id} className="dashboard-card">
+            <div key={st._id} className="subproject-card">
               <h3>{st.name}</h3>
               <p>{st.description}</p>
               <p style={{ color: "#60a5fa", marginTop: "10px" }}>
