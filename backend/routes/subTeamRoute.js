@@ -10,6 +10,52 @@ const Task = require("../models/task");
 const SubteamInvite=require("../models/SubTeamInvite.js")
 // 
 
+// ⭐ GET members + their tasks of a subteam
+router.get("/return-subteams/:id", async (req, res) => {
+  try {
+    const subteamId = req.params.id;
+
+    // Step 1: Find subteam + populate all members
+    const subteam = await Subteam.findById(subteamId)
+      .populate("members", "userName email")
+      .lean();
+
+    if (!subteam) {
+      return res.status(404).json({ message: "Subteam not found" });
+    }
+
+    // Step 2: Get all tasks in this subteam
+    const tasks = await Task.find({ subteamId }).lean();
+
+    // Step 3: Attach tasks to members
+    const membersWithTaskInfo = subteam.members.map((member) => {
+      const task = tasks.find(
+        (t) => t.assignedTo?.toString() === member._id.toString()
+      );
+
+      return {
+        _id: member._id,
+        userName: member.userName,
+        email: member.email,
+
+        assignedTask: task ? task.title : "No task assigned",
+        description: task ? task.description : "",
+        status: task ? task.status : "Pending",
+        deadline: task ? task.deadline : null,
+      };
+    });
+
+    res.json({
+      subteamName: subteam.name,
+      members: membersWithTaskInfo,
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 router.post("/invite-subteam-head", protectRoute, async (req, res) => {
   try {
