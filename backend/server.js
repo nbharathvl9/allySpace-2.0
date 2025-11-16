@@ -5,6 +5,9 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const authRoute= require("./routes/authRoute.js");
 const UserRoute=require("./routes/userRoute.js");
+const teamRoute =require("./routes/teamRoute.js");
+const subteamRoute =require("./routes/subTeamRoute.js");
+const taskRoute=require("./routes/taskRoute.js");
 const User = require("./models/User.js");
 
 const app = express();
@@ -27,6 +30,9 @@ connectDB();
 // ---------- Routes ----------
 app.use("/api/auth",authRoute);
 app.use("/api/user", UserRoute);
+app.use("/api/team",teamRoute);
+app.use("/api/subteam",subteamRoute);
+app.use("/api/task",taskRoute)
 
 // Test route
 app.get("/", (req, res) => {
