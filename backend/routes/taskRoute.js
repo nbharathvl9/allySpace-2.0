@@ -78,7 +78,7 @@ router.post("/create", protectRoute, async (req, res) => {
 
 router.post("/respond", protectRoute, async (req, res) => {
   try {
-    const { taskId, status } = req.body;
+    const { taskId, status, message } = req.body;
 
     const task = await Task.findById(taskId);
     if (!task) return res.status(404).json({ message: "Task not found" });
@@ -94,7 +94,7 @@ router.post("/respond", protectRoute, async (req, res) => {
     const isMember = subteam.members.includes(req.user._id);
 
     // ---------------------
-    // RULE A: Subteam Head responds to Team Head
+    // RULE A: Subteam Head → responds to Team Head
     // ---------------------
     if (isSubteamHead) {
       await Notification.create({
@@ -102,12 +102,12 @@ router.post("/respond", protectRoute, async (req, res) => {
         senderId: req.user._id,
         teamId: team._id,
         type: "TASK_RESPONSE",
-        message: `Subteam Head responded to task: ${task.title}`
+        message: message || `Subteam Head responded to task: ${task.title}`
       });
     }
 
     // ---------------------
-    // RULE B: Member responds to Subteam Head
+    // RULE B: Member → responds to Subteam Head
     // ---------------------
     if (isMember) {
       await Notification.create({
@@ -115,16 +115,17 @@ router.post("/respond", protectRoute, async (req, res) => {
         senderId: req.user._id,
         teamId: team._id,
         type: "TASK_RESPONSE",
-        message: `Member responded to task: ${task.title}`
+        message: message || `Member responded to task: ${task.title}`
       });
     }
 
-    // Update task
+    // Update task fields
     task.status = status;
+    task.responseMessage = message;   // <-- NEW LINE
     await task.save();
 
     res.json({
-      message: "Task response sent",
+      message: "Task response sent successfully",
       task
     });
 
@@ -133,6 +134,8 @@ router.post("/respond", protectRoute, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
 router.get("/assigned", protectRoute, async (req, res) => {
   try {
     const tasks = await Task.find({

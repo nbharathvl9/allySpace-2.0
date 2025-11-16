@@ -9,6 +9,7 @@ const TaskSchema = new mongoose.Schema({
   subteamId: { type: mongoose.Schema.Types.ObjectId, ref: "Subteam" },
   status: { type: String, enum: ["Pending", "In Progress", "Completed"], default: "Pending" },
   deadline: { type: Date },
+  responseMessage: { type: String }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Task", TaskSchema);
