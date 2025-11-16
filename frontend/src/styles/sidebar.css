@@ -1,4 +1,28 @@
-/* SIDEBAR CONTAINER */
+/* ========================================= */
+/* 🔵 FULL SCREEN OVERLAY (for click outside) */
+/* ========================================= */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  background: transparent;
+  pointer-events: none;     /* disabled until open */
+  z-index: 9998;            /* behind sidebar-wrapper */
+}
+
+.sidebar-overlay.open {
+  pointer-events: auto;     /* clicking outside works */
+}
+
+
+
+/* ========================================= */
+/* 🔵 SIDEBAR PANEL (your original design)   */
+/* ========================================= */
 .sidebar-wrapper {
   position: fixed;
   top: 0;
@@ -36,7 +60,11 @@
   transform: translateX(0);
 }
 
-/* SECTION TITLES */
+
+
+/* ========================================= */
+/* 🔵 SECTION TITLES                          */
+/* ========================================= */
 .sidebar-title {
   font-size: 15px;
   font-weight: 700;
@@ -46,7 +74,11 @@
   color: #f8fafc;
 }
 
-/* BUTTON BASE STYLE */
+
+
+/* ========================================= */
+/* 🔵 BUTTONS                                 */
+/* ========================================= */
 .sidebar-btn {
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -62,21 +94,43 @@
   transition: 0.2s ease, transform 0.1s ease;
 }
 
-.sidebar-btn:hover {
+.dashboard-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  width: 200px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  margin-top: -20px;
+
+  font-size: 15px;
+  font-weight: 500;
+  color: #f8fafc;
+
+  cursor: pointer;
+  transition: 0.2s ease, transform 0.1s ease;
+}
+
+.sidebar-btn:hover,
+.dashboard-btn:hover {
   background: rgba(255, 255, 255, 0.22);
   transform: translateY(-1px);
 }
 
-/* CREATE PROJECT BUTTON — bright, glowing, prominent */
+
+
+/* ========================================= */
+/* 🔵 CREATE PROJECT BUTTON                    */
+/* ========================================= */
 .create-btn {
   background: linear-gradient(135deg, #3b82f6, #60a5fa);
   border: 2px solid rgba(255, 255, 255, 0.18);
-border-radius: 14px;
-  padding: 12px ;
+  border-radius: 14px;
+
+  padding: 12px;
   color: white;
   font-weight: 600;
   font-size: medium;
-
 
   box-shadow: 0 4px 18px rgba(59, 130, 246, 0.45);
 }
@@ -86,48 +140,27 @@ border-radius: 14px;
   box-shadow: 0 6px 22px rgba(59, 130, 246, 0.55);
 }
 
+
+
+/* ========================================= */
+/* 🔵 SIDEBAR SECTION                          */
+/* ========================================= */
 .sidebar-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-/* CLOSE BUTTON */
+
+
+
+/* ========================================= */
+/* 🔵 CLOSE BUTTON                            */
+/* ========================================= */
 .sidebar-close-btn {
   position: absolute;
   top: 18px;
   right: 18px;
 
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(12px);
-
-  width: 38px;
-  height: 38px;
-
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
-  color: #f8fafc;
-  transition: 0.2s ease;
-}
-
-.sidebar-close-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
-  transform: scale(1.05);
-}
-/* HEADER (for close button) */
-.sidebar-header {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 8px;
-}
-
-/* CLOSE BUTTON */
-.sidebar-close-btn {
   background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(12px);
@@ -142,10 +175,67 @@ border-radius: 14px;
 
   cursor: pointer;
   color: #f8fafc;
+
   transition: 0.2s ease;
   z-index: 9999;
 }
 
 .sidebar-close-btn:hover {
   background: rgba(255, 255, 255, 0.22);
+}
+
+
+
+/* ========================================= */
+/* 🔵 HEADER                                  */
+/* ========================================= */
+.sidebar-header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+/* FULL SCREEN OVERLAY + FADE BACKDROP */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;                     /* top:0; right:0; bottom:0; left:0; */
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  align-items: stretch;
+
+  background: rgba(0, 0, 0, 0); /* transparent when closed */
+  backdrop-filter: none;
+  pointer-events: none;         /* disabled until open */
+  opacity: 0;
+  z-index: 9998;
+}
+
+/* when open: enable pointer events and fade-in backdrop */
+.sidebar-overlay.open {
+  pointer-events: auto;
+  background: rgba(0, 0, 0, 0.36); /* dark fade */
+  backdrop-filter: blur(2px) saturate(1.05);
+  opacity: 1;
+}
+
+/* keep your existing sidebar-wrapper styles — they slide in */
+/* but ensure z-index is higher than overlay */
+.sidebar-wrapper {
+  /* existing rules remain — ensure z-index > overlay */
+  z-index: 9999;
+  /* ... your other existing properties (unchanged) ... */
+}
+
+/* OPTIONAL: smoother slide + shadow while overlay fades */
+.sidebar-wrapper.open {
+  box-shadow: 0 18px 60px rgba(2, 6, 23, 0.6);
+  transition: transform 350ms cubic-bezier(.2,.9,.2,1), box-shadow 350ms ease;
+}
+
+/* make sure clicks inside the sidebar do not close it (we check overlay target in JS) */
+.sidebar-wrapper * {
+  cursor: default;
 }

@@ -25,9 +25,11 @@ export default function ProjectDashboard() {
     <div className="project-dashboard-wrapper">
 
       <Sidebar />
-      <Navbar onLogout={() => {
-            window.location.href = "/login";  // redirect to login
-        }}/>
+      <Navbar
+        onLogout={() => {
+          window.location.href = "/login";
+        }}
+      />
 
       <div className="project-dashboard-content">
 
@@ -36,7 +38,8 @@ export default function ProjectDashboard() {
           <span style={{ color: "#60a5fa" }}> Dashboard</span>
         </h1>
 
-        <p className="pd-description">{project.desc}</p>
+        {/* FIXED: Correct field name */}
+        <p className="pd-description">{project.description}</p>
 
         <div className="subproject-grid">
 

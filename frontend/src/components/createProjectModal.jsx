@@ -1,10 +1,12 @@
 import { useProjects } from "../context/projectContext.jsx";
-import { useSidebar } from "../context/sideBarContext.jsx";
 import "../styles/createProject.css";
 import { IoClose } from "react-icons/io5";
 
 export default function CreateProjectModal({ isOpen, onClose }) {
   const { addProject } = useProjects();
+
+  // 👉 Replace this later with actual logged–in username
+  const currentUser = "bharath";
 
   const handleCreate = () => {
     const title = document.getElementById("project-title").value.trim();
@@ -12,9 +14,14 @@ export default function CreateProjectModal({ isOpen, onClose }) {
 
     if (title === "") return;
 
-    addProject({ title, desc });
+    // 🔥 Project now includes subteamHead property for filtering
+    addProject({
+      title,
+      description: desc,
+      subteamHead: currentUser,
+    });
 
-    onClose(); // close modal
+    onClose();
   };
 
   if (!isOpen) return null;

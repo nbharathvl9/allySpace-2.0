@@ -1,5 +1,5 @@
 import NavbarLanding from "../components/NavbarLanding";
-import Hero from "../components/Hero";
+import Hero from "../components/hero";
 import "../index.css";
 
 export default function Landing() {
