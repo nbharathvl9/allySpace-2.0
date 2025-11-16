@@ -1,0 +1,151 @@
+/* SIDEBAR CONTAINER */
+.sidebar-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  height: 100vh;
+  width: 280px;
+
+  /* Beautiful vertical glass gradient */
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.04)
+  );
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+
+  padding: 28px 22px;
+
+  transform: translateX(-100%);
+  transition: transform 0.35s ease;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  color: #f8fafc;
+  z-index: 9999;
+}
+
+.sidebar-wrapper.open {
+  transform: translateX(0);
+}
+
+/* SECTION TITLES */
+.sidebar-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+  margin-bottom: 12px;
+  color: #f8fafc;
+}
+
+/* BUTTON BASE STYLE */
+.sidebar-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  padding: 14px 18px;
+  border-radius: 14px;
+
+  font-size: 15px;
+  font-weight: 500;
+  color: #f8fafc;
+
+  cursor: pointer;
+  transition: 0.2s ease, transform 0.1s ease;
+}
+
+.sidebar-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+/* CREATE PROJECT BUTTON — bright, glowing, prominent */
+.create-btn {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+border-radius: 14px;
+  padding: 12px ;
+  color: white;
+  font-weight: 600;
+  font-size: medium;
+
+
+  box-shadow: 0 4px 18px rgba(59, 130, 246, 0.45);
+}
+
+.create-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(59, 130, 246, 0.55);
+}
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* CLOSE BUTTON */
+.sidebar-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+
+  width: 38px;
+  height: 38px;
+
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  color: #f8fafc;
+  transition: 0.2s ease;
+}
+
+.sidebar-close-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: scale(1.05);
+}
+/* HEADER (for close button) */
+.sidebar-header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+/* CLOSE BUTTON */
+.sidebar-close-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  color: #f8fafc;
+  transition: 0.2s ease;
+  z-index: 9999;
+}
+
+.sidebar-close-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}

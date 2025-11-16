@@ -6,6 +6,10 @@ import GoogleButton from "../components/GoogleButton";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
+    const handleSignup = () => {
+   
+    window.location.href = "/dashboard";
+  };
 
   return (
     <AuthLayout>
@@ -38,7 +42,7 @@ export default function Signup() {
           </div>
         </div>
 
-        <button className="auth-btn signup">Sign Up</button>
+        <button className="auth-btn signup" onClick={handleSignup}>Sign Up</button>
                
         
         <GoogleButton className="GoogleButton" text="Sign up with Google" />

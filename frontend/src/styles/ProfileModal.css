@@ -1,0 +1,133 @@
+/* OVERLAY: Always on top of everything */
+.profile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  
+  width: 100vw;
+  height: 100vh;
+
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(10px);
+
+  z-index: 999999999; /* 🔥 Always above all */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* MODAL CARD */
+.profile-card {
+  width: 380px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(22px);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.18);
+
+  padding: 32px;
+  position: relative;
+  z-index: 9999999999; /* 🔥 modal front */
+
+  animation: fadeScale 0.25s ease;
+}
+
+@keyframes fadeScale {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* Close button */
+.profile-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  background: rgba(255,255,255,0.15);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  color: white;
+
+  backdrop-filter: blur(12px);
+}
+
+/* Avatar */
+.profile-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: url("https://i.pravatar.cc/200") center/cover;
+
+  margin: 0 auto 20px auto;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.profile-username {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.profile-email {
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* Roles */
+.role-badges {
+  display: flex;
+  gap: 10px;
+  margin: 14px 0;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.role-badge {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+}
+
+.role-badge.head {
+  background: #3b82f6;
+}
+
+.role-badge.subhead {
+  background: #a855f7;
+}
+
+.role-badge.member {
+  background: #22c55e;
+}
+
+/* Buttons */
+.edit-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 15px;
+
+  color: white;
+}
+
+.logout-big-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: white;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}

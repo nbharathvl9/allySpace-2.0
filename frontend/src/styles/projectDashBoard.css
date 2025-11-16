@@ -1,0 +1,145 @@
+.project-dashboard-wrapper {
+  height: 100vh;
+  width: 100vw;
+
+  background: radial-gradient(circle at top left, #3a0ca3, #240046, #10002b);
+  color: #f8fafc;
+  font-family: 'Inter', sans-serif;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* CONTENT */
+.project-dashboard-content {
+  padding: 90px 80px;
+}
+
+.pd-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.pd-description {
+  opacity: 0.75;
+  margin-bottom: 32px;
+}
+
+/* GRID */
+.subproject-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 26px;
+}
+
+/* CARD */
+.subproject-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+  padding: 22px;
+  backdrop-filter: blur(18px);
+  transition: 0.2s ease;
+}
+
+.subproject-card:hover {
+  transform: translateY(-3px);
+}
+
+/* HEADER */
+.sp-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.lead-badge {
+  background: rgba(255,255,255,0.18);
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+/* DESCRIPTION */
+.sp-desc {
+  opacity: 0.8;
+  margin-bottom: 16px;
+}
+
+/* STATS */
+.sp-stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.sp-stats span {
+  background: rgba(255,255,255,0.15);
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+
+/* BUTTONS */
+.sp-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.sp-btn {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  color: #f8fafc;
+  transition: 0.2s;
+}
+
+.sp-btn:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+
+/* DELETE BUTTON */
+.delete-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  background: #b91c1c;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #ef4444;
+}
+
+/* ADD SUBPROJECT */
+.add-subproject-card {
+  border: 2px dashed rgba(255,255,255,0.25);
+  border-radius: 18px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  padding: 30px;
+  transition: 0.25s ease;
+}
+
+.add-subproject-card:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: #60a5fa;
+}
+
+.add-plus {
+  font-size: 40px;
+  color: #60a5fa;
+}
