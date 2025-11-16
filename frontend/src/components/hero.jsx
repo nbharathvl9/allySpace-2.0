@@ -9,7 +9,7 @@ const Hero = () => {
       <div className="neon-illustration">
         <div className="cube-stack">
           <div className="cube neon"></div>
-          <div className="cube neon"></div>
+  z        <div className="cube neon"></div>
           <div className="cube neon"></div>
         </div>
 

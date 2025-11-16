@@ -4,6 +4,10 @@ import "../styles/dashboard.css";
 import { useSidebar } from "../context/sideBarContext.jsx";
 import ProfileModal from "./ProfileModal.jsx";
 import { useState } from "react";
+
+
+
+
 export default function Navbar({ onLogout }) {
       const { toggleSidebar } = useSidebar();
       const [profileOpen, setProfileOpen] = useState(false);
