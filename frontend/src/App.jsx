@@ -3,11 +3,13 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/DashBoard";
 import ProjectDashboard from "./pages/ProjectDashboard";
+import Landing from "./pages/Landing";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
