@@ -10,7 +10,7 @@ const generateToken = (id) => {
 // Cookie options
 const cookieOptions = {
   httpOnly: true,
-  secure: true,           // ❗ set false for localhost testing if needed
+  secure: false,           // ❗ set false for localhost testing if needed
   sameSite: "none",       // for cross-origin frontend
   maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
 };
