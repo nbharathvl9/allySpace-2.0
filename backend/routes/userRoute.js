@@ -11,7 +11,7 @@ const Task = require("../models/task");
 // Protected route example
 router.get("/profile", protectRoute, async (req, res) => {
   res.json({
-    message: "Authorized",
+    message: "ProfileFetched",
     user: req.user,
   });
 });
@@ -19,7 +19,7 @@ router.put("/profile", protectRoute, async (req, res) => {
   try {
     const { userName, email } = req.body;
 
-    // Check duplicates except current user's own values
+    // Check duplicates
     if (email && email !== req.user.email) {
       if (await User.findOne({ email })) {
         return res.status(400).json({ message: "Email already exists" });
@@ -33,7 +33,7 @@ router.put("/profile", protectRoute, async (req, res) => {
     }
 
     const updatedUser = await User.findOneAndUpdate(
-      { id: req.user.id },
+      { _id: req.user._id },     // ✅ FIXED
       { userName, email },
       { new: true }
     ).select("-password");
@@ -42,11 +42,13 @@ router.put("/profile", protectRoute, async (req, res) => {
       message: "Profile updated successfully",
       user: updatedUser,
     });
+
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 router.get("/notifications", protectRoute, async (req, res) => {
   try {
     const notifications = await Notification.find({
