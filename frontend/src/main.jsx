@@ -1,17 +1,17 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import React, { StrictMode } from "react";
+import { createRoot } from "react-dom/client";  // ⭐ Required import
+import App from "./App";
+import "./index.css";
 
-import { SidebarProvider } from './context/sideBarContext.jsx' 
-import { ProjectProvider } from './context/projectContext.jsx'  // ⭐ ADD THIS
+import { SidebarProvider } from "./context/sideBarContext.jsx";
+import { ProjectProvider } from "./context/projectContext.jsx";
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-   <SidebarProvider>
-      <ProjectProvider>   {/* ⭐ Add this */}
+    <SidebarProvider>
+      <ProjectProvider>
         <App />
       </ProjectProvider>
     </SidebarProvider>
-  </StrictMode>,
-)
+  </StrictMode>
+);
