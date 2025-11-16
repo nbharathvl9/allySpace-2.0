@@ -1,61 +1,52 @@
 import "../styles/sidebar.css";
 import { IoClose } from "react-icons/io5";
 import { useSidebar } from "../context/sideBarContext.jsx";
-import { useProjects } from "../context/projectContext.jsx";
 import { useState, useEffect, useRef } from "react";
 import CreateProjectModal from "./createProjectModal.jsx";
 import YourSubprojectsModal from "./YourSubprojectsModal.jsx";
-import YourMemberTeamsModal from "./YourMemberTeamsModal.jsx"; // ⭐ NEW
+import YourMemberTeamsModal from "./YourMemberTeamsModal.jsx";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 export default function Sidebar() {
   const { isOpen, closeSidebar } = useSidebar();
-  const { projects } = useProjects();
+
+  const [teams, setTeams] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [subteamModalOpen, setSubteamModalOpen] = useState(false);
-  const [memberModalOpen, setMemberModalOpen] = useState(false); // ⭐ NEW
+  const [memberModalOpen, setMemberModalOpen] = useState(false);
 
   const navigate = useNavigate();
-
-  // Sidebar reference for click-outside detection
   const sidebarRef = useRef(null);
 
+  // Fetch teams where user is HEAD
   useEffect(() => {
-    if (!isOpen) return;
+    api.get("/team/head")
+      .then((res) => setTeams(res.data.teams))
+      .catch((err) => console.log(err));
+  }, []);
 
-    const handleOutsideClick = (e) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
-        closeSidebar();
-      }
-    };
-
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [isOpen]);
-
-  const openProjectDashboard = (id) => {
-    navigate(`/project/${id}`);
+  const openProjectDashboard = (teamId) => {
+    navigate(`/project/${teamId}`);
     closeSidebar();
   };
 
   return (
     <>
       <div className={`sidebar-wrapper ${isOpen ? "open" : ""}`}>
-
         <div className="sidebar-content" ref={sidebarRef}>
 
-          {/* Close Button */}
+          {/* Close */}
           <div className="sidebar-header">
             <button className="sidebar-close-btn" onClick={closeSidebar}>
               <IoClose size={26} />
             </button>
           </div>
 
-          {/* MAIN DASHBOARD BUTTON */}
+          {/* Dashboard */}
           <div className="sidebar-section">
             <button
               className="dashboard-btn"
-              style={{ marginBottom: "10px" }}
               onClick={() => {
                 navigate("/dashboard");
                 closeSidebar();
@@ -72,18 +63,18 @@ export default function Sidebar() {
               + Create Project
             </button>
 
-            {projects.map((project, index) => (
+            {teams.map((team) => (
               <button
-                key={index}
+                key={team._id}
                 className="sidebar-btn"
-                onClick={() => openProjectDashboard(index)}
+                onClick={() => openProjectDashboard(team._id)}
               >
-                {project.title}
+                {team.TeamName}
               </button>
             ))}
           </div>
 
-          {/* SUBPROJECT HEAD SECTION */}
+          {/* SUBTEAM HEAD */}
           <p className="sidebar-title">Subproject Head</p>
           <div className="sidebar-section">
             <button
@@ -97,13 +88,13 @@ export default function Sidebar() {
             </button>
           </div>
 
-          {/* MEMBER SECTION */}
+          {/* MEMBER */}
           <p className="sidebar-title">Member</p>
           <div className="sidebar-section">
             <button
               className="sidebar-btn"
               onClick={() => {
-                setMemberModalOpen(true);  // ⭐ OPEN MEMBER POPUP
+                setMemberModalOpen(true);
                 closeSidebar();
               }}
             >
@@ -124,7 +115,7 @@ export default function Sidebar() {
 
       <YourMemberTeamsModal
         isOpen={memberModalOpen}
-        onClose={() => setMemberModalOpen(false)} // ⭐ CLOSE MEMBER POPUP
+        onClose={() => setMemberModalOpen(false)}
       />
     </>
   );
