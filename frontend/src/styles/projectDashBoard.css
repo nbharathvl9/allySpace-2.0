@@ -109,14 +109,14 @@
   width: 100%;
   padding: 10px;
   border-radius: 10px;
-  background: #b91c1c;
+  background: #ef4444;
   color: white;
   border: none;
   cursor: pointer;
 }
 
 .delete-btn:hover {
-  background: #ef4444;
+  background: #b91c1c;
 }
 
 /* ADD SUBPROJECT */
