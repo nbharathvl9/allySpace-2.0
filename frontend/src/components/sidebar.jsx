@@ -10,8 +10,8 @@ import api from "../api/axios";
 
 export default function Sidebar() {
   const { isOpen, closeSidebar } = useSidebar();
-  const [projects, setProjects] = useState([]);
 
+  const [teams, setTeams] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [subteamModalOpen, setSubteamModalOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
@@ -19,28 +19,13 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
 
-  // Fetch Teams where user is HEAD
+  // Fetch teams where user is HEAD
   useEffect(() => {
     api.get("/team/head")
-      .then((res) => setProjects(res.data.teams))
+      .then((res) => setTeams(res.data.teams))
       .catch((err) => console.log(err));
   }, []);
 
-  // Close sidebar when clicking outside
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleOutsideClick = (e) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
-        closeSidebar();
-      }
-    };
-
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [isOpen]);
-
-  // Navigate to project dashboard
   const openProjectDashboard = (teamId) => {
     navigate(`/project/${teamId}`);
     closeSidebar();
@@ -51,18 +36,17 @@ export default function Sidebar() {
       <div className={`sidebar-wrapper ${isOpen ? "open" : ""}`}>
         <div className="sidebar-content" ref={sidebarRef}>
 
-          {/* Close Button */}
+          {/* Close */}
           <div className="sidebar-header">
             <button className="sidebar-close-btn" onClick={closeSidebar}>
               <IoClose size={26} />
             </button>
           </div>
 
-          {/* Dashboard Home */}
+          {/* Dashboard */}
           <div className="sidebar-section">
             <button
               className="dashboard-btn"
-              style={{ marginBottom: "10px" }}
               onClick={() => {
                 navigate("/dashboard");
                 closeSidebar();
@@ -72,25 +56,25 @@ export default function Sidebar() {
             </button>
           </div>
 
-          {/* Project Head */}
+          {/* PROJECT HEAD SECTION */}
           <p className="sidebar-title">Project Head</p>
           <div className="sidebar-section">
             <button className="create-btn" onClick={() => setModalOpen(true)}>
               + Create Project
             </button>
 
-            {projects.map((project) => (
+            {teams.map((team) => (
               <button
-                key={project._id}
+                key={team._id}
                 className="sidebar-btn"
-                onClick={() => openProjectDashboard(project._id)}
+                onClick={() => openProjectDashboard(team._id)}
               >
-                {project.TeamName}
+                {team.TeamName}
               </button>
             ))}
           </div>
 
-          {/* Subproject Head */}
+          {/* SUBTEAM HEAD */}
           <p className="sidebar-title">Subproject Head</p>
           <div className="sidebar-section">
             <button
@@ -104,7 +88,7 @@ export default function Sidebar() {
             </button>
           </div>
 
-          {/* Member */}
+          {/* MEMBER */}
           <p className="sidebar-title">Member</p>
           <div className="sidebar-section">
             <button
@@ -121,7 +105,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Modals */}
+      {/* MODALS */}
       <CreateProjectModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 
       <YourSubprojectsModal

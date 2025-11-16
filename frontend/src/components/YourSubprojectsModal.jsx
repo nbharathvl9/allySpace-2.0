@@ -1,55 +1,45 @@
 import "../styles/createProject.css";
 import { IoClose } from "react-icons/io5";
-import { useProjects } from "../context/projectContext.jsx";
+import { useEffect, useState } from "react";
+import api from "../api/axios";
 
 export default function YourSubprojectsModal({ isOpen, onClose }) {
-  const { getSubteamsForUser, projects } = useProjects();
+  const [subteams, setSubteams] = useState([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      api.get("/subteam/head")
+        .then(res => setSubteams(res.data.subteams))
+        .catch(err => console.log(err));
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
-
-  const mySubs = getSubteamsForUser();
 
   return (
     <div className="modal-overlay">
       <div className="modal-card" style={{ maxWidth: "550px" }}>
-
         <button className="modal-close-btn" onClick={onClose}>
           <IoClose size={26} />
         </button>
 
         <h2 className="modal-title">Your Subprojects</h2>
 
-        {mySubs.length === 0 ? (
+        {subteams.length === 0 ? (
           <p style={{ color: "#fff", marginTop: "20px" }}>
-            You are not a subproject head for any teams.
+            You are not a subteam head.
           </p>
         ) : (
-          mySubs.map((sp, index) => {
-
-            // find parent project name
-            const parentProject = projects.find((p) =>
-              p.subprojects.includes(sp)
-            );
-
-            return (
-              <div
-                key={index}
-                className="dashboard-card"
-                style={{ marginBottom: "15px" }}
-              >
-                <h3>{sp.title}</h3>
-                <p>{sp.desc}</p>
-                <p style={{ color: "#60a5fa", marginTop: "10px" }}>
-                  Lead: @{sp.lead}
-                </p>
-                <p style={{ fontSize: "0.85rem", opacity: 0.7 }}>
-                  Parent Project: {parentProject?.title}
-                </p>
-              </div>
-            );
-          })
+          subteams.map((st) => (
+            <div key={st._id} className="dashboard-card">
+              <h3>{st.name}</h3>
+              <p>{st.description}</p>
+              <p style={{ color: "#60a5fa", marginTop: "10px" }}>
+                Team: {st.teamId?.TeamName}
+              </p>
+            </div>
+          ))
         )}
-
       </div>
     </div>
   );
