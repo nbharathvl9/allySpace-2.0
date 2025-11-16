@@ -1,17 +1,18 @@
-import React, { StrictMode } from "react";
-import { createRoot } from "react-dom/client";  // ⭐ Required import
-import App from "./App";
-import "./index.css";
-
-import { SidebarProvider } from "./context/sideBarContext.jsx";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
+import { BrowserRouter } from "react-router-dom";
 import { ProjectProvider } from "./context/projectContext.jsx";
+import { SidebarProvider } from "./context/sideBarContext.jsx";
 
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
     <SidebarProvider>
       <ProjectProvider>
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </ProjectProvider>
     </SidebarProvider>
-  </StrictMode>
+  </React.StrictMode>
 );

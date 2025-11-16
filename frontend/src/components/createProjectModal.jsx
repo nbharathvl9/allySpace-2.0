@@ -1,20 +1,33 @@
-import { useProjects } from "../context/projectContext.jsx";
-import { useSidebar } from "../context/sideBarContext.jsx";
 import "../styles/createProject.css";
 import { IoClose } from "react-icons/io5";
+import api from "../api/axios";   // IMPORTANT
 
 export default function CreateProjectModal({ isOpen, onClose }) {
-  const { addProject } = useProjects();
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const title = document.getElementById("project-title").value.trim();
     const desc = document.getElementById("project-desc").value.trim();
 
-    if (title === "") return;
+    if (!title) return alert("Project title is required");
 
-    addProject({ title, desc });
+    try {
+      // 🔥 CALL BACKEND
+      const res = await api.post("/team/create", {
+        TeamName: title,
+        description: desc,
+      });
 
-    onClose(); // close modal
+      alert("Project created!");
+
+      onClose();
+
+      // Refresh so sidebar loads new project
+      window.location.reload();
+
+    } catch (err) {
+      console.log(err);
+      alert(err.response?.data?.message || "Failed to create project");
+    }
   };
 
   if (!isOpen) return null;

@@ -3,15 +3,16 @@ const Counter = require("./Counter");
 
 const userSchema = new mongoose.Schema(
   {
-    id: { type: Number, unique: true },
+    id: { type: Number, unique: true }, // auto-increment ID
     userName: { type: String, unique: true, required: true },
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true }
   },
-  { timestamps: true }
+  {
+    timestamps: true
+  }
 );
-
-// Auto-increment ID
+// Auto-increment hook
 userSchema.pre("save", async function (next) {
   if (this.isNew) {
     const counter = await Counter.findByIdAndUpdate(
@@ -23,5 +24,6 @@ userSchema.pre("save", async function (next) {
   }
   next();
 });
+
 
 module.exports = mongoose.model("User", userSchema);

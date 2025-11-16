@@ -1,28 +1,35 @@
-import "../styles/createProject.css"; // reusing modal styles
 import { IoClose } from "react-icons/io5";
-import { useProjects } from "../context/projectContext";
-import { useParams } from "react-router-dom";
+import "../styles/createProject.css";
+import api from "../api/axios";
 
-export default function AddSubprojectModal({ isOpen, onClose }) {
-  const { addSubproject } = useProjects();
-  const { id } = useParams(); // current project ID
+export default function AddSubprojectModal({ isOpen, onClose, teamId }) {
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const title = document.getElementById("sub-title").value.trim();
     const desc = document.getElementById("sub-desc").value.trim();
     const lead = document.getElementById("sub-lead").value.trim();
 
-    if (title === "") return;
+    if (!title || !lead) {
+      return alert("Title and Subproject head username are required");
+    }
 
-    addSubproject(id, {
-      title,
-      desc,
-      lead: lead || "unassigned",
-      members: 0,
-      tasks: 0
-    });
+    try {
+      // 🔥 Send invite to subproject head
+      const res = await api.post("/subteam/invite-subteam-head", {
+        teamId,
+        name: title,
+        description: desc,
+        headUserName: lead
+      });
 
-    onClose();
+      alert("Subteam request sent!");
+      onClose();
+      window.location.reload();
+
+    } catch (err) {
+      console.log(err);
+      alert(err.response?.data?.message || "Failed to create subproject");
+    }
   };
 
   if (!isOpen) return null;
@@ -35,7 +42,7 @@ export default function AddSubprojectModal({ isOpen, onClose }) {
           <IoClose size={26} />
         </button>
 
-        <h2 className="modal-title">Add Subproject</h2>
+        <h2 className="modal-title">Create Subproject</h2>
 
         <div className="modal-input-block">
           <label>Subproject Title</label>
@@ -48,12 +55,12 @@ export default function AddSubprojectModal({ isOpen, onClose }) {
         </div>
 
         <div className="modal-input-block">
-          <label>Lead Username</label>
-          <input id="sub-lead" placeholder="@username" />
+          <label>Subproject Head Username</label>
+          <input id="sub-lead" placeholder="Enter username" />
         </div>
 
         <button className="modal-create-btn" onClick={handleCreate}>
-          Create Subproject
+          Send Invite
         </button>
 
       </div>

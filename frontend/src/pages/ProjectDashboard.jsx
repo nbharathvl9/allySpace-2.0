@@ -1,58 +1,62 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/projectDashboard.css";
 import Navbar from "../components/Navbar.jsx";
 import Sidebar from "../components/sidebar.jsx";
-
 import { useParams } from "react-router-dom";
-import { useProjects } from "../context/projectContext.jsx";
 import AddSubprojectModal from "../components/AddSubProjectModal.jsx";
+import api from "../api/axios";
 
 export default function ProjectDashboard() {
-  const { id } = useParams();
-  const { projects } = useProjects();
+  const { id } = useParams();  // MongoDB teamId
+  const [project, setProject] = useState(null);
   const [subModalOpen, setSubModalOpen] = useState(false);
 
-  const project = projects[id];
+  useEffect(() => {
+    api
+      .get(`/team/${id}`)
+      .then((res) => {
+        setProject(res.data.team);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [id]);
 
   if (!project)
     return (
       <div style={{ color: "white", padding: "40px" }}>
-        Project not found.
+        Loading project...
       </div>
     );
 
   return (
     <div className="project-dashboard-wrapper">
-
       <Sidebar />
-      <Navbar onLogout={() => {
-            window.location.href = "/login";  // redirect to login
-        }}/>
+      <Navbar />
 
       <div className="project-dashboard-content">
-
         <h1 className="pd-title">
-          {project.title}
+          {project.TeamName}
           <span style={{ color: "#60a5fa" }}> Dashboard</span>
         </h1>
 
-        <p className="pd-description">{project.desc}</p>
+        <p className="pd-description">{project.description}</p>
 
         <div className="subproject-grid">
-
-          {project.subprojects?.map((sp, idx) => (
-            <div className="subproject-card" key={idx}>
-              
+          {project.Subteams.map((sp) => (
+            <div className="subproject-card" key={sp._id}>
               <div className="sp-header">
-                <h3>{sp.title}</h3>
-                <span className="lead-badge">Lead: @{sp.lead}</span>
+                <h3>{sp.name}</h3>
+                <span className="lead-badge">
+                  Lead: @{sp.headId?.userName || "Unassigned"}
+                </span>
               </div>
 
-              <p className="sp-desc">{sp.desc}</p>
+              <p className="sp-desc">{sp.description}</p>
 
               <div className="sp-stats">
-                <span>Members: {sp.members}</span>
-                <span>Tasks: {sp.tasks}</span>
+                <span>Members: {sp.members.length}</span>
+                <span>Tasks: {sp.tasks.length}</span>
               </div>
 
               <div className="sp-actions">
@@ -61,11 +65,10 @@ export default function ProjectDashboard() {
               </div>
 
               <button className="delete-btn">Delete</button>
-
             </div>
           ))}
 
-          {/* ADD SUBPROJECT CARD */}
+          {/* Add Subteam */}
           <div
             className="add-subproject-card"
             onClick={() => setSubModalOpen(true)}
@@ -73,15 +76,14 @@ export default function ProjectDashboard() {
             <div className="add-plus">+</div>
             <p>Add Subproject</p>
           </div>
-
         </div>
       </div>
 
       <AddSubprojectModal
         isOpen={subModalOpen}
         onClose={() => setSubModalOpen(false)}
+        teamId={id}
       />
-
     </div>
   );
 }
