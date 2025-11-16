@@ -5,11 +5,10 @@ const Hero = () => {
   return (
     <section className="hero-sec">
 
-      {/* Left 3D Neon Blocks */}
       <div className="neon-illustration">
         <div className="cube-stack">
           <div className="cube neon"></div>
-  z        <div className="cube neon"></div>
+          <div className="cube neon"></div>
           <div className="cube neon"></div>
         </div>
 
@@ -18,7 +17,6 @@ const Hero = () => {
         <div className="floating-cube fc3"></div>
       </div>
 
-      {/* Right content */}
       <div className="hero-text">
         <h1>Maintain Co-Ordination Like a Pro</h1>
         <p>
@@ -26,9 +24,7 @@ const Hero = () => {
           Elit incidunt ut labore magna aliqua. Ut enim ad minim.
         </p>
 
-        <button className="watch-btn">
-          ▶ Watch The Video
-        </button>
+        <button className="watch-btn">▶ Watch The Video</button>
       </div>
     </section>
   );
