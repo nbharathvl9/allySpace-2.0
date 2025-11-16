@@ -6,6 +6,10 @@ import GoogleButton from "../components/GoogleButton";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const onLogin=()=>{
+    window.location.href="/dashboard"
+
+  }
 
   return (
     <AuthLayout>
@@ -33,7 +37,7 @@ export default function Login() {
           </div>
         </div>
 
-        <button className="auth-btn">Login</button>
+        <button className="auth-btn" onClick={onLogin}>Login</button>
    
 
 <GoogleButton className="GoogleButton" text="Sign up with Google" />
