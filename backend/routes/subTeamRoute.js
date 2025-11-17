@@ -399,4 +399,156 @@ router.get("/member", protectRoute, async (req, res) => {
   }
 });
 
+
+// ---------------------------------------------------------
+// 🔥 USER REQUESTS TO JOIN SUBTEAM
+// ---------------------------------------------------------
+router.post("/request-join", protectRoute, async (req, res) => {
+  try {
+    const { teamId, subteamId } = req.body;
+
+    const team = await Team.findById(teamId);
+    const subteam = await Subteam.findById(subteamId);
+
+    if (!team || !subteam) return res.status(404).json({ message: "Project not found" });
+
+    // Notify Team Head
+    await Notification.create({
+      recipientId: team.TeamHId, // Team Creator
+      senderId: req.user._id,
+      teamId: team._id,
+      subteamId: subteam._id,
+      type: "JOIN_REQUEST",
+      message: `${req.user.userName} requested to join ${subteam.name} in ${team.TeamName}.`
+    });
+
+    res.json({ message: "Request sent to Team Head" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// ---------------------------------------------------------
+// 🔥 APPROVE: ADD AS MEMBER
+// ---------------------------------------------------------
+router.post("/join/approve-member", protectRoute, async (req, res) => {
+  try {
+    const { notificationId } = req.body;
+    const notif = await Notification.findById(notificationId);
+    if (!notif) return res.status(404).json({ message: "Notification not found" });
+
+    const subteam = await Subteam.findById(notif.subteamId);
+    
+    // Add to members if not already there
+    if (!subteam.members.includes(notif.senderId)) {
+      subteam.members.push(notif.senderId);
+      await subteam.save();
+    }
+
+    // Update Notif
+    notif.status = "Accepted";
+    notif.isRead = true;
+    await notif.save();
+
+    // Notify User
+    await Notification.create({
+      recipientId: notif.senderId,
+      senderId: req.user._id,
+      teamId: notif.teamId,
+      type: "INVITE_ACCEPTED",
+      message: `Your request to join ${subteam.name} was approved (Member).`
+    });
+
+    res.json({ message: "User added as member" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// ---------------------------------------------------------
+// 🔥 APPROVE: MAKE SUBTEAM HEAD
+// ---------------------------------------------------------
+router.post("/join/approve-head", protectRoute, async (req, res) => {
+  try {
+    const { notificationId } = req.body;
+    const notif = await Notification.findById(notificationId);
+    if (!notif) return res.status(404).json({ message: "Notification not found" });
+
+    const subteam = await Subteam.findById(notif.subteamId);
+    const oldHeadId = subteam.headId;
+    const newHeadId = notif.senderId;
+
+    // 1. If there was an old head, demote to member
+    if (oldHeadId && !subteam.members.includes(oldHeadId)) {
+      subteam.members.push(oldHeadId);
+    }
+
+    // 2. Set new head
+    subteam.headId = newHeadId;
+
+    // 3. Ensure new head is in members list (optional but keeps data consistent)
+    if (!subteam.members.includes(newHeadId)) {
+      subteam.members.push(newHeadId);
+    }
+
+    await subteam.save();
+
+    // Update Notif
+    notif.status = "Accepted";
+    notif.isRead = true;
+    await notif.save();
+
+    // Notify New Head
+    await Notification.create({
+      recipientId: newHeadId,
+      senderId: req.user._id,
+      teamId: notif.teamId,
+      type: "INVITE_ACCEPTED",
+      message: `Your request was approved. You are now the HEAD of ${subteam.name}.`
+    });
+
+    // Notify Old Head (if existed)
+    if (oldHeadId && oldHeadId.toString() !== newHeadId.toString()) {
+      await Notification.create({
+        recipientId: oldHeadId,
+        senderId: req.user._id,
+        teamId: notif.teamId,
+        message: `You have been demoted to member in ${subteam.name}. New head: ${req.user.userName}` // Generic message type
+      });
+    }
+
+    res.json({ message: "User assigned as Subteam Head" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// ---------------------------------------------------------
+// 🔥 REJECT REQUEST
+// ---------------------------------------------------------
+router.post("/join/reject", protectRoute, async (req, res) => {
+  try {
+    const { notificationId } = req.body;
+    const notif = await Notification.findById(notificationId);
+    
+    notif.status = "Rejected";
+    notif.isRead = true;
+    await notif.save();
+
+    await Notification.create({
+      recipientId: notif.senderId,
+      senderId: req.user._id,
+      teamId: notif.teamId,
+      type: "INVITE_REJECTED",
+      message: `Your request to join was rejected.`
+    });
+
+    res.json({ message: "Request rejected" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;

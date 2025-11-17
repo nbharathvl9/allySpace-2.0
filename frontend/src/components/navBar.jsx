@@ -5,16 +5,20 @@ import { useSidebar } from "../context/sideBarContext.jsx";
 import ProfileModal from "./ProfileModal.jsx";
 import NotificationDropdown from "./NotificationDropdown.jsx";
 import { useState, useEffect } from "react";
-import api from "../api/axios.js";
-import FluidButton from "./FluidButton.jsx";
+import api from "../api/axios";
+import FluidButton from "./FluidButton";
 
 export default function Navbar() {
   const { toggleSidebar } = useSidebar();
   const [profileOpen, setProfileOpen] = useState(false);
   const [notiOpen, setNotiOpen] = useState(false);
-  const [hasUnread, setHasUnread] = useState(false); // Red dot state
+  const [hasUnread, setHasUnread] = useState(false);
 
-  // 🔥 Fetch unread notifications
+  // 🔥 Search States
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [showSearch, setShowSearch] = useState(false);
+
   const checkUnread = async () => {
     try {
       const res = await api.get("/notifications");
@@ -31,12 +35,42 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
-  // 🔥 On click → toggle dropdown & mark as read
+  // 🔥 Handle Search Input
+  useEffect(() => {
+    const delayDebounce = setTimeout(async () => {
+      if (query.trim()) {
+        try {
+          const res = await api.get(`/team/search?query=${query}`);
+          setResults(res.data.teams);
+          setShowSearch(true);
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        setResults([]);
+        setShowSearch(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [query]);
+
+  // 🔥 Handle Join Request
+  const requestJoin = async (teamId, subteamId) => {
+    try {
+      await api.post("/subteam/request-join", { teamId, subteamId });
+      alert("Request sent to Team Head");
+      setShowSearch(false);
+      setQuery("");
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to send request");
+    }
+  };
+
   const handleNotifClick = async () => {
     if (!notiOpen) {
       setNotiOpen(true);
-      setHasUnread(false); // Hide dot instantly
-
+      setHasUnread(false);
       try {
         await api.put("/notifications/mark-read");
       } catch (err) {
@@ -59,51 +93,70 @@ export default function Navbar() {
 
   return (
     <div className="dashboard-navbar">
-      
-      {/* Left */}
       <div className="nav-left">
         <FaBars className="hamburger" onClick={toggleSidebar} />
-        <div className="nav-brand">
-          ally<span>Space</span>
-        </div>
+        <div className="nav-brand">ally<span>Space</span></div>
       </div>
 
-      {/* Center */}
+      {/* 🔥 CENTER - SEARCH */}
       <div className="nav-center">
-        <div className="nav-search">
+        <div className="nav-search" style={{ position: "relative" }}>
           <FiSearch size={18} />
-          <input placeholder="Search projects, tasks..." />
-        </div>
-      </div>
+          <input 
+            placeholder="Search main projects..." 
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onBlur={() => setTimeout(() => setShowSearch(false), 200)} 
+            onFocus={() => query && setShowSearch(true)}
+          />
 
-      {/* Right */}
-      <div className="nav-right">
-
-        {/* 🔔 Notification Icon */}
-        <div className="notif-wrapper" onClick={handleNotifClick} style={{ cursor: "pointer" }}>
-          <FiBell className="nav-icon" />
-          {hasUnread && <span className="notif-badge"></span>}
-          
-          {notiOpen && (
-            <NotificationDropdown close={() => setNotiOpen(false)} />
+          {/* 🔥 SEARCH RESULTS DROPDOWN */}
+          {showSearch && results.length > 0 && (
+            <div className="search-results">
+              {results.map((team) => (
+                <div key={team._id} className="search-result-item">
+                  <h4>{team.TeamName}</h4>
+                  <div className="subteam-list">
+                    {team.Subteams.length === 0 ? (
+                      <span style={{fontSize: "12px", color: "#64748b"}}>No subteams</span>
+                    ) : (
+                      team.Subteams.map((st) => (
+                        <div key={st._id} className="subteam-item">
+                          <span>{st.name}</span>
+                          <FluidButton 
+                            className="btn-primary"
+                            style={{ padding: "4px 10px", fontSize: "11px", height: "auto" }}
+                            onClick={() => requestJoin(team._id, st._id)}
+                          >
+                            Request Join
+                          </FluidButton>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
+      </div>
 
-        {/* Profile */}
+      <div className="nav-right">
+        <div className="notif-wrapper">
+          <div style={{ position: "relative", cursor: "pointer", display: "flex" }} onClick={handleNotifClick}>
+            <FiBell className="nav-icon" />
+            {hasUnread && <span className="notif-badge"></span>} 
+          </div>
+          {notiOpen && <NotificationDropdown close={() => setNotiOpen(false)} />}
+        </div>
+
         <div className="profile-pic" onClick={() => setProfileOpen(true)} />
-
-        {/* Logout */}
-        <FluidButton
-          onClick={handleLogout}
-          style={{ padding: "8px 18px", fontSize: "13px" }}
-        >
+        <FluidButton onClick={handleLogout} style={{ padding: "8px 18px", fontSize: "13px" }}>
           Logout
         </FluidButton>
       </div>
 
-      {/* Profile Modal */}
       <ProfileModal isOpen={profileOpen} onClose={() => setProfileOpen(false)} />
-
     </div>
   );
 }

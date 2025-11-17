@@ -14,7 +14,8 @@ const NotificationSchema = new mongoose.Schema({
       "SUBTEAM_MEMBER_INVITE",
       "INVITE_ACCEPTED",
       "INVITE_REJECTED",
-      "TASK_RESPONSE" // 🔥 ADD THIS
+      "TASK_RESPONSE",
+      "JOIN_REQUEST" // 🔥 ADDED
     ],
     required: true
   },
