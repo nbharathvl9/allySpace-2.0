@@ -149,3 +149,58 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 /* 🔥 Removed .watch-btn */
+
+/* ... existing code ... */
+
+/* ---------------- NAVBAR ---------------- */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 6%;
+}
+
+.nav-logo {
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #f8fafc;
+}
+
+.nav-logo span {
+  color: #60a5fa;
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px; /* Reduced gap slightly to fit the buttons */
+}
+
+/* 🔥 BOUNCY BUBBLY LINKS */
+.nav-links a {
+  text-decoration: none;
+  color: #cbd5e1;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 30px; /* Bubbly shape */
+  background: transparent;
+  border: 1px solid transparent;
+  
+  /* 🎈 Bouncy Transition */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.nav-links a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-3px) scale(1.1); /* Bounce up and grow */
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3); /* Drop shadow */
+}
+
+.nav-links a:active {
+  transform: translateY(0) scale(0.95); /* Squish effect on click */
+}
+
+/* ... rest of your css ... */

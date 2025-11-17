@@ -8,11 +8,13 @@
   flex-direction: column;
 }
 
+/* CONTENT */
 .project-dashboard-content {
-  padding: 40px 80px 90px 80px; /* Adjusted padding */
+  /* 🔥 Adjusted padding, removed left */
+  padding: 40px 80px 90px 80px; 
   width: 100%;
-  max-width: 1300px;
-  margin: 0 auto;
+  max-width: 1400px;
+  margin: 0 auto; /* Center content */
 }
 
 .pd-title {

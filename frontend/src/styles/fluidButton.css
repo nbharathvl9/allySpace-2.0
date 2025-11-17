@@ -113,3 +113,23 @@
   color: #fff;
   box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2);
 }
+/* ... existing code ... */
+
+/* Hover State */
+.fluid-btn:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5);
+  
+  /* 🔥 Add this for extra bounce */
+  transform: translate(var(--pull-x, 0), var(--pull-y, 0)) scale(1.05); 
+}
+
+/* Click State */
+.fluid-btn:active {
+  /* 🔥 Deeper squish */
+  transform: translate(var(--pull-x, 0), var(--pull-y, 0)) scale(0.92);
+  transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ... rest of your css ... */
