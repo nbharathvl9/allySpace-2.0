@@ -10,7 +10,7 @@ const Task = require("../models/task");
 const SubteamInvite = require("../models/SubTeamInvite.js");
 
 // ---------------------------------------------------------
-// 1. GET MEMBERS + TASKS (Updated with responseMessage)
+// 1. GET MEMBERS + TASKS (Updated to return teamId)
 // ---------------------------------------------------------
 router.get("/return-subteams/:id", async (req, res) => {
   try {
@@ -43,12 +43,13 @@ router.get("/return-subteams/:id", async (req, res) => {
         description: task ? task.description : "",
         status: task ? task.status : "Pending",
         deadline: task ? task.deadline : null,
-        responseMessage: task ? task.responseMessage : "" // 🔥 ADDED THIS
+        responseMessage: task ? task.responseMessage : "" 
       };
     });
 
     res.json({
       subteamName: subteam.name,
+      teamId: subteam.teamId, // 🔥 ADDED: Required for Assign Task Modal
       members: membersWithTaskInfo,
     });
 
@@ -105,16 +106,15 @@ router.post("/invite-subteam-head", protectRoute, async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// 3. ACCEPT SUBTEAM HEAD (Updated to prevent duplicates)
+// 3. ACCEPT SUBTEAM HEAD
 // ---------------------------------------------------------
 router.post("/accept-subteam-head", protectRoute, async (req, res) => {
   try {
-    const { inviteId, notificationId } = req.body; // 🔥 Get notificationId
+    const { inviteId, notificationId } = req.body;
 
     const invite = await SubteamInvite.findById(inviteId);
     if (!invite) return res.status(404).json({ message: "Invite not found" });
 
-    // 🔥 CHECK: If not Pending, stop here (Prevents duplicate subteams)
     if (invite.status !== "Pending") {
       return res.status(400).json({ message: "Invite already processed" });
     }
@@ -123,11 +123,9 @@ router.post("/accept-subteam-head", protectRoute, async (req, res) => {
       return res.status(403).json({ message: "Not your invite" });
     }
 
-    // 1. Mark invite as accepted
     invite.status = "Accepted";
     await invite.save();
 
-    // 2. Create the subteam
     const subteam = await Subteam.create({
       name: invite.name,
       description: invite.description,
@@ -137,12 +135,12 @@ router.post("/accept-subteam-head", protectRoute, async (req, res) => {
 
     await Team.findByIdAndUpdate(invite.teamId, { $push: { Subteams: subteam._id } });
 
-    // 3. 🔥 Update the Notification to "Accepted" (Removes it from frontend list)
+    // Update notification status
     if (notificationId) {
       await Notification.findByIdAndUpdate(notificationId, { status: "Accepted", isRead: true });
     }
 
-    // 4. Notify sender
+    // Notify sender
     await Notification.create({
       recipientId: invite.senderId,
       senderId: req.user._id,
@@ -161,7 +159,7 @@ router.post("/accept-subteam-head", protectRoute, async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// 4. REJECT SUBTEAM HEAD (Updated to prevent duplicates)
+// 4. REJECT SUBTEAM HEAD
 // ---------------------------------------------------------
 router.post("/reject-subteam-head", protectRoute, async (req, res) => {
   try {
@@ -170,7 +168,6 @@ router.post("/reject-subteam-head", protectRoute, async (req, res) => {
     const invite = await SubteamInvite.findById(inviteId);
     if (!invite) return res.status(404).json({ message: "Invite not found" });
 
-    // 🔥 CHECK: Prevent double rejection
     if (invite.status !== "Pending") {
       return res.status(400).json({ message: "Invite already processed" });
     }
@@ -178,7 +175,6 @@ router.post("/reject-subteam-head", protectRoute, async (req, res) => {
     invite.status = "Rejected";
     await invite.save();
 
-    // 🔥 Update Notification
     if (notificationId) {
       await Notification.findByIdAndUpdate(notificationId, { status: "Rejected", isRead: true });
     }
@@ -232,7 +228,7 @@ router.post("/invite-member", protectRoute, async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// 6. ACCEPT MEMBER (Updated to prevent duplicates)
+// 6. ACCEPT MEMBER
 // ---------------------------------------------------------
 router.post("/accept-member", protectRoute, async (req, res) => {
   try {
@@ -241,7 +237,6 @@ router.post("/accept-member", protectRoute, async (req, res) => {
     const notif = await Notification.findById(notificationId);
     if (!notif) return res.status(404).json({ message: "Notification not found" });
 
-    // 🔥 CHECK: Prevent processing twice
     if (notif.status !== "Pending") {
       return res.status(400).json({ message: "Invite already processed" });
     }
@@ -249,13 +244,11 @@ router.post("/accept-member", protectRoute, async (req, res) => {
     const subteam = await Subteam.findById(notif.subteamId);
     if (!subteam) return res.status(404).json({ message: "Subteam not found" });
 
-    // 🔥 Prevent duplicate members
     if (!subteam.members.includes(req.user._id)) {
       subteam.members.push(req.user._id);
       await subteam.save();
     }
 
-    // Mark notification as done
     notif.status = "Accepted";
     notif.isRead = true;
     await notif.save();
@@ -269,7 +262,7 @@ router.post("/accept-member", protectRoute, async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// 7. REJECT MEMBER (Updated to prevent duplicates)
+// 7. REJECT MEMBER
 // ---------------------------------------------------------
 router.post("/reject-member", protectRoute, async (req, res) => {
   try {
@@ -278,7 +271,6 @@ router.post("/reject-member", protectRoute, async (req, res) => {
     const notif = await Notification.findById(notificationId);
     if (!notif) return res.status(404).json({ message: "Notification not found" });
 
-    // 🔥 CHECK
     if (notif.status !== "Pending") {
       return res.status(400).json({ message: "Invite already processed" });
     }
@@ -304,7 +296,7 @@ router.post("/reject-member", protectRoute, async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// 8. ADD MEMBER DIRECTLY (Manual add)
+// 8. ADD MEMBER DIRECTLY
 // ---------------------------------------------------------
 router.post("/add-member", protectRoute, async (req, res) => {
   try {
@@ -326,7 +318,7 @@ router.post("/add-member", protectRoute, async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// 9. DELETE SUBTEAM (NEW)
+// 9. DELETE SUBTEAM
 // ---------------------------------------------------------
 router.delete("/:id", protectRoute, async (req, res) => {
   try {
@@ -335,19 +327,13 @@ router.delete("/:id", protectRoute, async (req, res) => {
 
     if (!subteam) return res.status(404).json({ message: "Subteam not found" });
 
-    // Verify Team Head (Only Team Head can delete)
     const team = await Team.findById(subteam.teamId);
     if (team.TeamHId.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not authorized to delete this subteam" });
     }
 
-    // Remove subteam reference from Team
     await Team.findByIdAndUpdate(subteam.teamId, { $pull: { Subteams: id } });
-
-    // Delete the subteam
     await Subteam.findByIdAndDelete(id);
-
-    // Optional: Clean up tasks associated with this subteam
     await Task.deleteMany({ subteamId: id });
 
     res.json({ message: "Subteam deleted successfully" });
@@ -358,7 +344,7 @@ router.delete("/:id", protectRoute, async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// 10. REMOVE MEMBER FROM SUBTEAM (NEW)
+// 10. REMOVE MEMBER FROM SUBTEAM
 // ---------------------------------------------------------
 router.post("/remove-member", protectRoute, async (req, res) => {
   try {
@@ -367,7 +353,6 @@ router.post("/remove-member", protectRoute, async (req, res) => {
     const subteam = await Subteam.findById(subteamId);
     if (!subteam) return res.status(404).json({ message: "Subteam not found" });
 
-    // Check authorization: Subteam Head OR Team Head
     const team = await Team.findById(subteam.teamId);
     
     const isSubteamHead = subteam.headId?.toString() === req.user._id.toString();
@@ -377,7 +362,6 @@ router.post("/remove-member", protectRoute, async (req, res) => {
        return res.status(403).json({ message: "Not authorized to remove members" });
     }
 
-    // Filter out the member
     subteam.members = subteam.members.filter(m => m.toString() !== memberId);
     await subteam.save();
 

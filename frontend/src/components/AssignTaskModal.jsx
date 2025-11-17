@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import api from "../api/axios";
-import "../styles/createProject.css"; // Reusing your existing styles
+import "../styles/createProject.css";
 
-export default function AssignTaskModal({ isOpen, onClose, teamId, subteamId, headId }) {
+// 🔥 UPDATED: Accepts 'assignedTo' which can be any userId
+export default function AssignTaskModal({ isOpen, onClose, teamId, subteamId, assignedTo }) {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [deadline, setDeadline] = useState("");
 
   const handleAssign = async () => {
-    if (!title || !headId) return alert("Title and Subteam Head are required");
+    if (!title || !assignedTo) return alert("Title and User are required");
 
     try {
       await api.post("/task/create", {
@@ -18,7 +19,7 @@ export default function AssignTaskModal({ isOpen, onClose, teamId, subteamId, he
         deadline,
         teamId,
         subteamId,
-        assignedTo: headId // Assigning to the Subteam Head
+        assignedTo // 🔥 Uses the passed ID
       });
 
       alert("Task assigned successfully!");
@@ -32,10 +33,10 @@ export default function AssignTaskModal({ isOpen, onClose, teamId, subteamId, he
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay" style={{ zIndex: 20002 }}>
       <div className="modal-card">
         <button className="modal-close-btn" onClick={onClose}><IoClose size={26} /></button>
-        <h2 className="modal-title">Assign Task to Subteam Head</h2>
+        <h2 className="modal-title">Assign Task</h2>
 
         <div className="modal-input-block">
           <label>Task Title</label>
