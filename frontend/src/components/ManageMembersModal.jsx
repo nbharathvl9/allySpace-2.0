@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { IoClose, IoTrash } from "react-icons/io5";
 import api from "../api/axios";
 import "../styles/createProject.css";
+import FluidButton from "./FluidButton"; // 🔥 Import
 
 export default function ManageMembersModal({ isOpen, onClose, subteamId }) {
   const [members, setMembers] = useState([]);
@@ -22,7 +23,10 @@ export default function ManageMembersModal({ isOpen, onClose, subteamId }) {
 
   const handleInvite = async () => {
     try {
-      await api.post("/subteam/invite-member", { subteamId, userName: newMemberName });
+      await api.post("/subteam/invite-member", {
+        subteamId,
+        userName: newMemberName,
+      });
       alert("Invite sent!");
       setNewMemberName("");
     } catch (err) {
@@ -45,36 +49,51 @@ export default function ManageMembersModal({ isOpen, onClose, subteamId }) {
   return (
     <div className="modal-overlay">
       <div className="modal-card-large" style={{ maxWidth: "600px" }}>
-        <button className="modal-close-btn" onClick={onClose}><IoClose size={26} /></button>
+        <button className="modal-close-btn" onClick={onClose}>
+          <IoClose size={26} />
+        </button>
         <h2 className="modal-title">Manage Members</h2>
 
         {/* Invite Section */}
         <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-          <input 
-            className="modal-input-block" 
-            style={{ flex: 1, margin: 0 }}
-            placeholder="Enter username to invite" 
+          <input
+            className="modal-input-block"
+            style={{ flex: 1, margin: 0, background: "rgba(0,0,0,0.2)" }}
+            placeholder="Enter username to invite"
             value={newMemberName}
             onChange={(e) => setNewMemberName(e.target.value)}
           />
-          <button className="modal-create-btn" style={{ width: "auto", marginTop: 0 }} onClick={handleInvite}>
+          {/* 🔥 Fluid Button */}
+          <FluidButton
+            className="btn-primary"
+            style={{ width: "auto", marginTop: 0 }}
+            onClick={handleInvite}
+          >
             Invite
-          </button>
+          </FluidButton>
         </div>
 
         {/* Members List */}
         <div className="member-list">
           {members.map((m) => (
-            <div className="member-card" key={m._id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div
+              className="member-card"
+              key={m._id}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
               <div>
                 <h4 style={{ margin: 0 }}>{m.userName}</h4>
                 <p style={{ fontSize: "12px", opacity: 0.7 }}>{m.email}</p>
               </div>
-              <IoTrash 
-                size={20} 
-                color="#ef4444" 
-                style={{ cursor: "pointer" }} 
-                onClick={() => handleRemove(m._id)} 
+              <IoTrash
+                size={20}
+                color="#ef4444"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleRemove(m._id)}
               />
             </div>
           ))}

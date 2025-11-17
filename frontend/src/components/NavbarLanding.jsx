@@ -1,5 +1,6 @@
 import "../index.css";
 import { Link } from "react-router-dom";
+import FluidButton from "./FluidButton"; // 🔥 Import
 
 export default function NavbarLanding() {
   return (
@@ -13,7 +14,10 @@ export default function NavbarLanding() {
       </div>
 
       <Link to="/login">
-        <button className="join-btn">Join Us</button>
+        {/* 🔥 Fluid Button */}
+        <FluidButton className="btn-primary" style={{ padding: "10px 22px" }}>
+          Join Us
+        </FluidButton>
       </Link>
     </nav>
   );

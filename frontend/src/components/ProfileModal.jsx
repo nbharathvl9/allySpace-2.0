@@ -1,9 +1,12 @@
 import "../styles/ProfileModal.css";
 import { IoClose } from "react-icons/io5";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom"; // 🔥 Import Portal
 import api from "../api/axios";
+import FluidButton from "./FluidButton"; 
 
 export default function ProfileModal({ isOpen, onClose }) {
+  // Prevent rendering if not open
   if (!isOpen) return null;
 
   const [user, setUser] = useState(null);
@@ -35,17 +38,16 @@ export default function ProfileModal({ isOpen, onClose }) {
   const handleSave = async () => {
     try {
       const res = await api.put("/user/profile", form);
-
       setUser(res.data.user);
       setEditMode(false);
-
       alert("Profile updated");
     } catch (err) {
       alert(err.response?.data?.message || "Update failed");
     }
   };
 
-  return (
+  // 🔥 USE PORTAL: Moves this HTML outside of Navbar and into Body
+  return createPortal(
     <div className="profile-overlay">
       <div className="profile-card">
 
@@ -67,13 +69,21 @@ export default function ProfileModal({ isOpen, onClose }) {
               <span className="role-badge member">Member</span>
             </div>
 
-            <button className="edit-btn" onClick={() => setEditMode(true)}>
+            {/* Fluid Buttons */}
+            <FluidButton
+              style={{ width: "100%", marginTop: "12px" }}
+              onClick={() => setEditMode(true)}
+            >
               Edit Profile
-            </button>
-
-            <button className="logout-big-btn" onClick={handleLogout}>
+            </FluidButton>
+            
+            <FluidButton
+              className="btn-danger"
+              style={{ width: "100%", marginTop: "12px" }}
+              onClick={handleLogout}
+            >
               Logout
-            </button>
+            </FluidButton>
           </>
         )}
 
@@ -102,19 +112,24 @@ export default function ProfileModal({ isOpen, onClose }) {
               />
             </div>
 
-            <button className="save-btn" onClick={handleSave}>
+            <FluidButton
+              className="btn-primary"
+              style={{ width: "100%", marginTop: "10px" }}
+              onClick={handleSave}
+            >
               Save
-            </button>
-
-            <button
-              className="cancel-btn"
+            </FluidButton>
+            
+            <FluidButton
+              style={{ width: "100%", marginTop: "12px" }}
               onClick={() => setEditMode(false)}
             >
               Cancel
-            </button>
+            </FluidButton>
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body // 🔥 Target container
   );
 }

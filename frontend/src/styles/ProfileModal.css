@@ -1,133 +1,137 @@
-/* OVERLAY: Always on top of everything */
 .profile-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  
-  width: 100vw;
-  height: 100vh;
-
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(10px);
-
-  z-index: 999999999; /* 🔥 Always above all */
+  inset: 0;
+  background: rgba(10, 10, 20, 0.6);
+  backdrop-filter: blur(16px);
+  z-index: 99999;
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: modalFadeIn 0.3s ease;
 }
 
-/* MODAL CARD */
-.profile-card {
-  width: 380px;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(22px);
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.18);
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
+.profile-card {
+  width: 90%;
+  max-width: 380px;
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(24px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
   padding: 32px;
   position: relative;
-  z-index: 9999999999; /* 🔥 modal front */
-
-  animation: fadeScale 0.25s ease;
+  z-index: 100000;
+  animation: modalScaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes fadeScale {
+@keyframes modalScaleIn {
   from { transform: scale(0.9); opacity: 0; }
-  to   { transform: scale(1);   opacity: 1; }
+  to { transform: scale(1); opacity: 1; }
 }
 
-/* Close button */
 .profile-close-btn {
   position: absolute;
-  top: 14px;
-  right: 14px;
-
-  background: rgba(255,255,255,0.15);
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  border: none;
+  top: 18px;
+  right: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #94a3b8;
   cursor: pointer;
+  transition: 0.3s ease;
+}
+.profile-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
   color: white;
-
-  backdrop-filter: blur(12px);
+  transform: rotate(90deg);
 }
 
-/* Avatar */
 .profile-avatar {
-  width: 110px;
-  height: 110px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  background: url("https://i.pravatar.cc/200") center/cover;
-
+  background: url("https://api.dicebear.com/7.x/avataaars/svg?seed=Felix") center/cover;
+  background-color: #1e293b;
   margin: 0 auto 20px auto;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .profile-username {
   font-size: 24px;
   font-weight: 700;
   text-align: center;
+  color: #f1f5f9;
 }
 
 .profile-email {
   text-align: center;
   opacity: 0.8;
+  color: #94a3b8;
+  margin-top: 4px;
 }
 
-/* Roles */
 .role-badges {
   display: flex;
   gap: 10px;
-  margin: 14px 0;
+  margin: 18px 0;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .role-badge {
-  padding: 8px 14px;
+  padding: 6px 14px;
   border-radius: 10px;
   font-size: 13px;
   font-weight: 600;
   color: white;
 }
 
-.role-badge.head {
-  background: #3b82f6;
+.role-badge.head { background: #2563eb; }
+.role-badge.subhead { background: #7c3aed; }
+.role-badge.member { background: #16a34a; }
+
+/* 🔥 Removed .edit-btn, .logout-big-btn */
+
+/* Edit Mode */
+.edit-section {
+  margin-top: 20px;
 }
-
-.role-badge.subhead {
-  background: #a855f7;
+.edit-section .input-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
 }
-
-.role-badge.member {
-  background: #22c55e;
+.edit-section .input-block label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #cbd5e1;
 }
-
-/* Buttons */
-.edit-btn {
-  width: 100%;
-  padding: 12px;
-  margin-top: 12px;
-
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
+.edit-section .input-block input {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 14px;
   border-radius: 12px;
-  cursor: pointer;
+  color: white;
   font-size: 15px;
-
-  color: white;
+  outline: none;
+  transition: 0.2s;
+}
+.edit-section .input-block input:focus {
+  border-color: #60a5fa;
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
 }
 
-.logout-big-btn {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-
-  background: linear-gradient(135deg, #ef4444, #b91c1c);
-  color: white;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  font-weight: 700;
-}
+/* 🔥 Removed .save-btn, .cancel-btn */

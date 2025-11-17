@@ -1,28 +1,35 @@
-import Navbar from "../components/Navbar";
+import { useEffect, useState } from "react";
+import Navbar from "../components/navBar.jsx";
 import "../styles/dashboard.css";
 import Sidebar from "../components/sidebar.jsx";
-import { useProjects } from "../context/projectContext.jsx";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 export default function Dashboard() {
-  const { projects, viewMode, getSubteamsForUser } = useProjects(); // ← hook inside component
+  const [projects, setProjects] = useState([]);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    window.location.href = "/login";
-  };
+  // Fetch projects from backend
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await api.get("/team/head");
+        setProjects(res.data.teams);
+      } catch (err) {
+        console.error("Failed to fetch projects:", err);
+      }
+    };
+    fetchProjects();
+  }, []);
 
-  const openProject = (index) => {
-    navigate(`/project/${index}`);
+  const openProject = (id) => {
+    navigate(`/project/${id}`);
   };
-
-  // If you want to show subteams view inside dashboard later:
-  // const mySubteams = getSubteamsForUser();
 
   return (
     <div className="dashboard-wrapper">
       <Sidebar />
-      <Navbar onLogout={handleLogout} />
+      <Navbar /> {/* 🔥 No longer needs onLogout prop */}
 
       <div className="dashboard-content">
 
@@ -34,23 +41,21 @@ export default function Dashboard() {
           Create and manage projects from the sidebar.
         </p>
 
-        {/* TITLE */}
         <h2 className="section-title">Your Projects</h2>
 
-        {/* PROJECT CARDS */}
         <div className="project-card-container">
           {projects.length === 0 ? (
             <p className="no-projects">
               No projects yet. Create one from the sidebar!
             </p>
           ) : (
-            projects.map((project, index) => (
+            projects.map((project) => (
               <div
-                key={index}
+                key={project._id}
                 className="dashboard-card clickable-card"
-                onClick={() => openProject(index)}
+                onClick={() => openProject(project._id)}
               >
-                <h3>{project.title}</h3>
+                <h3>{project.TeamName}</h3>
                 <p>{project.description}</p>
 
                 <p
@@ -60,7 +65,7 @@ export default function Dashboard() {
                     color: "#60a5fa",
                   }}
                 >
-                  Subprojects: {project.subprojects.length}
+                  Subprojects: {project.Subteams?.length || 0}
                 </p>
               </div>
             ))
