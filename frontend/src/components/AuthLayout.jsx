@@ -22,6 +22,7 @@ export default function AuthLayout({ children }) {
     const bgX = (x / width) * 100;
     const bgY = (y / height) * 100;
 
+    // Set CSS variables for the card to use
     card.style.setProperty("--rotate-x", `${rotateX}deg`);
     card.style.setProperty("--rotate-y", `${rotateY}deg`);
     card.style.setProperty("--bg-x", `${bgX}%`);
@@ -46,7 +47,10 @@ export default function AuthLayout({ children }) {
       onMouseLeave={handleMouseLeave}
     >
       <div className="auth-card" ref={cardRef}>
+        {/* This is the shine layer behind the content */}
         <div className="auth-card-shine"></div>
+        
+        {/* This is the main content layer */}
         <div className="auth-card-content">
           {children}
         </div>
