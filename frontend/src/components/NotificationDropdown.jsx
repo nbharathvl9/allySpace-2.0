@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "../styles/notif.css";
 import api from "../api/axios";
+import FluidButton from "./FluidButton"; // 🔥 Import
 
 export default function NotificationDropdown({ close }) {
   const [notifs, setNotifs] = useState([]);
@@ -18,16 +19,14 @@ export default function NotificationDropdown({ close }) {
     if (notif.type === "SUBTEAM_HEAD_INVITE") {
       await api.post("/subteam/accept-subteam-head", {
         inviteId: notif.inviteId,
-        notificationId: notif._id
+        notificationId: notif._id,
       });
     }
-
     if (notif.type === "SUBTEAM_MEMBER_INVITE") {
       await api.post("/subteam/accept-member", {
         notificationId: notif._id,
       });
     }
-
     await load();
   };
 
@@ -35,22 +34,19 @@ export default function NotificationDropdown({ close }) {
     if (notif.type === "SUBTEAM_HEAD_INVITE") {
       await api.post("/subteam/reject-subteam-head", {
         inviteId: notif.inviteId,
-        notificationId: notif._id
+        notificationId: notif._id,
       });
     }
-
     if (notif.type === "SUBTEAM_MEMBER_INVITE") {
       await api.post("/subteam/reject-member", {
         notificationId: notif._id,
       });
     }
-
     await load();
   };
 
   return (
     <div className="notif-box">
-
       <h3 className="notif-title">Notifications</h3>
 
       {notifs.length === 0 && (
@@ -65,17 +61,25 @@ export default function NotificationDropdown({ close }) {
             (n.type === "SUBTEAM_HEAD_INVITE" ||
               n.type === "SUBTEAM_MEMBER_INVITE") && (
               <div className="notif-actions">
-                <button className="notif-accept" onClick={() => accept(n)}>
+                {/* 🔥 Fluid Buttons */}
+                <FluidButton
+                  className="btn-success"
+                  style={{ padding: "5px 12px", fontSize: "14px" }}
+                  onClick={() => accept(n)}
+                >
                   ✓
-                </button>
-                <button className="notif-reject" onClick={() => reject(n)}>
+                </FluidButton>
+                <FluidButton
+                  className="btn-danger"
+                  style={{ padding: "5px 12px", fontSize: "14px" }}
+                  onClick={() => reject(n)}
+                >
                   ✕
-                </button>
+                </FluidButton>
               </div>
             )}
         </div>
       ))}
-
     </div>
   );
 }

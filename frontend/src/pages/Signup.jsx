@@ -1,8 +1,8 @@
-import "../styles/Signup.css";
+import "../styles/Signup.css"; // Imports Login.css
 import AuthLayout from "../components/AuthLayout";
 import { useState } from "react";
-import GoogleButton from "../components/GoogleButton";
-import api from "../api/axios.js"; // <-- import axios instance
+import api from "../api/axios.js";
+import FluidButton from "../components/FluidButton"; // 🔥 Import
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,14 +15,10 @@ export default function Signup() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-
     try {
       const res = await api.post("/auth/signup", form);
-
       console.log("Signup success:", res.data);
-
       window.location.href = "/dashboard";
-
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || "Signup failed");
@@ -34,12 +30,11 @@ export default function Signup() {
       <h2 className="auth-title">Create Account</h2>
 
       <form className="auth-form" onSubmit={handleSignup}>
-        
         <div className="input-block">
           <label>UserName</label>
           <input
             type="text"
-            placeholder="Enter the User Name"
+            placeholder="e.g., @username"
             value={form.userName}
             onChange={(e) => setForm({ ...form, userName: e.target.value })}
           />
@@ -49,7 +44,7 @@ export default function Signup() {
           <label>Email</label>
           <input
             type="email"
-            placeholder="you@example.com"
+            placeholder="e.g., you@example.com"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
@@ -73,11 +68,16 @@ export default function Signup() {
           </div>
         </div>
 
-        <button className="auth-btn signup" type="submit">
+        {/* 🔥 Fluid Submit Button */}
+        <FluidButton
+          className="btn-primary"
+          type="submit"
+          style={{ width: "100%", padding: "14px", marginTop: "10px" }}
+        >
           Sign Up
-        </button>
+        </FluidButton>
 
-        <GoogleButton text="Sign up with Google" />
+        {/* Google Button Removed */}
 
         <p className="auth-footer">
           Already have an account? <a href="/login">Login</a>

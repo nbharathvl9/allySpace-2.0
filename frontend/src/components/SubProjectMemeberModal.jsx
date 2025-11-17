@@ -3,22 +3,23 @@ import { IoClose } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import AssignTaskModal from "./AssignTaskModal";
+import FluidButton from "./FluidButton"; // 🔥 Import
 
 export default function SubprojectMembersModal({ subteamId, onClose }) {
   const [members, setMembers] = useState([]);
   const [subteamName, setSubteamName] = useState("");
-  const [teamId, setTeamId] = useState(null); // 🔥 NEW: Store teamId
-  const [assignModalOpen, setAssignModalOpen] = useState(null); // stores member ID
+  const [teamId, setTeamId] = useState(null);
+  const [assignModalOpen, setAssignModalOpen] = useState(null);
   const [newMemberName, setNewMemberName] = useState("");
 
   const fetchMembers = () => {
     api.get(`/subteam/return-subteams/${subteamId}`)
-      .then(res => {
+      .then((res) => {
         setMembers(res.data.members);
         setSubteamName(res.data.subteamName);
-        setTeamId(res.data.teamId); // 🔥 NEW: Get teamId from backend
+        setTeamId(res.data.teamId);
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
@@ -29,17 +30,14 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
 
   const handleAddMember = async () => {
     if (!newMemberName.trim()) return alert("Please enter a username");
-
     try {
       await api.post("/subteam/invite-member", {
         subteamId,
-        userName: newMemberName
+        userName: newMemberName,
       });
-      
       alert("Invite sent successfully!");
       setNewMemberName("");
     } catch (err) {
-      console.error(err);
       alert(err.response?.data?.message || "Failed to invite member");
     }
   };
@@ -57,26 +55,28 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
           {/* Add Member Input */}
           <div style={{ display: "flex", gap: "10px", marginBottom: "25px" }}>
             <input
-              style={{ 
-                flex: 1, 
-                padding: "12px", 
-                borderRadius: "12px", 
-                border: "1px solid rgba(255,255,255,0.2)", 
-                background: "rgba(255,255,255,0.1)", 
+              style={{
+                flex: 1,
+                padding: "12px",
+                borderRadius: "12px",
+                border: "1px solid rgba(255,255,255,0.2)",
+                background: "rgba(0,0,0,0.2)",
                 color: "white",
-                outline: "none"
+                outline: "none",
+                fontSize: "14px",
               }}
               placeholder="Enter username to invite"
               value={newMemberName}
               onChange={(e) => setNewMemberName(e.target.value)}
             />
-            <button
-              className="modal-create-btn"
+            {/* 🔥 Fluid Button */}
+            <FluidButton
+              className="btn-primary"
               style={{ width: "auto", marginTop: 0, padding: "0 24px" }}
               onClick={handleAddMember}
             >
               Add Member
-            </button>
+            </FluidButton>
           </div>
 
           {members.length === 0 ? (
@@ -89,15 +89,13 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
                 <div className="member-card" key={m._id}>
                   <h3>{m.userName}</h3>
                   <p>Email: {m.email}</p>
-
                   <p className="task-title">Task: {m.assignedTask}</p>
                   {m.description && <p style={{ opacity: 0.8 }}>{m.description}</p>}
 
-                  {/* 🔥 NEW: Display Response Message */}
                   {m.responseMessage && (
-                    <div style={{ marginTop: "8px", padding: "8px", background: "rgba(96, 165, 250, 0.1)", borderRadius: "8px", borderLeft: "3px solid #60a5fa" }}>
-                      <p style={{ fontSize: "13px", color: "#93c5fd" }}>Response:</p>
-                      <p style={{ fontSize: "14px" }}>{m.responseMessage}</p>
+                    <div className="response-message-box">
+                      <p className="response-message-title">Response:</p>
+                      <p>{m.responseMessage}</p>
                     </div>
                   )}
 
@@ -119,14 +117,19 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
                     </p>
                   )}
 
-                  {/* Assign Task Button */}
-                  <button
-                    className="modal-create-btn" 
-                    style={{ marginTop: "15px", padding: "8px" }}
+                  {/* 🔥 Fluid Button */}
+                  <FluidButton
+                    className="btn-primary"
+                    style={{
+                      width: "100%",
+                      marginTop: "15px",
+                      padding: "8px",
+                      fontSize: "13px",
+                    }}
                     onClick={() => setAssignModalOpen(m._id)}
                   >
                     Assign Task
-                  </button>
+                  </FluidButton>
                 </div>
               ))}
             </div>
@@ -137,13 +140,13 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
       {/* Task Modal */}
       {assignModalOpen && (
         <AssignTaskModal
-          assignedTo={assignModalOpen} // Member ID
-          teamId={teamId}              // Fetched from backend
+          assignedTo={assignModalOpen}
+          teamId={teamId}
           subteamId={subteamId}
           isOpen={true}
           onClose={() => {
             setAssignModalOpen(null);
-            fetchMembers(); // Refresh to show new task status
+            fetchMembers();
           }}
         />
       )}

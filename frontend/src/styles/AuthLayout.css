@@ -4,7 +4,6 @@
   --primary-dark: #1e293b;     
 }
 
-/* Background */
 .auth-container {
   min-height: 100vh;
   width: 100%;
@@ -12,76 +11,99 @@
   justify-content: center;
   align-items: center;
   padding: 20px;
-
-   /* 🔥 REMOVED PURPLE GRADIENT */
-   background: transparent; /* Inherits Deep Slate from body */
-
+  background: transparent; /* Base is set by index.css */
   position: relative;
+  overflow: hidden; /* Hide gradient overflow */
+  
+  perspective: 1000px;
 }
 
-/* Grain overlay (high quality) */
+/* 🔥 1. Noise overlay (sits on top) */
 .auth-container::before {
   content: "";
   position: absolute;
   inset: 0;
   background-image: url("https://uploads-ssl.webflow.com/5fda76232e3988a2f3e7f2a7/5fdc92b3816fbc2fcdfd0450_Noise%20Texture.png");
-  opacity: 0.07; /* Reduced opacity for subtlety */
+  opacity: 0.07;
   mix-blend-mode: overlay;
   pointer-events: none;
+  z-index: 3; /* Top layer */
 }
 
-/* 🌟 IMPROVED GLASS: clearer, brighter, deeper */
+/* 🔥 2. New "Color Splash" Aurora Background (sits in middle) */
+.auth-container::after {
+  content: "";
+  position: absolute;
+  inset: -100px; /* Overscan to avoid hard edges */
+  
+  /* The "splashes" - 🔥 Increased opacity from 0.3 to 0.5 */
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.5), transparent 30%),
+    radial-gradient(circle at 90% 30%, rgba(124, 58, 237, 0.5), transparent 35%),
+    radial-gradient(circle at 80% 90%, rgba(20, 184, 166, 0.5), transparent 30%);
+  
+  filter: blur(100px); /* Makes them soft and fluid */
+  z-index: 1; /* Behind card */
+  animation: spinColors 20s linear infinite;
+}
+
+@keyframes spinColors {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+
+/* 3. 3D TILT CARD */
 .auth-card {
   width: 100%;
-  max-width: 400px;
-  padding: 40px;
-
-  border-radius: 24px; /* Smoother corners */
-
-  /* Darker, more professional glass */
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-
-  animation: fadeIn 0.45s ease-out;
+  max-width: 420px;
+  position: relative;
+  z-index: 2; /* Sits above aurora, below noise */
+  
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  --bg-x: 50%;
+  --bg-y: 50%;
+  
+  transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+  transition: transform 0.1s linear; 
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
-@keyframes glassIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.google-btn {
-  background: white;
-  color: #0f172a;
-  border-radius: 10px;
-  padding: 12px 18px;
-  font-weight: 600;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  border: none;
-  transition: 0.2s ease;
-  margin-top: 0px;
+/* Card Content (front layer) */
+.auth-card-content {
   width: 100%;
+  padding: 40px;
+  border-radius: 24px;
+  
+  /* 🔥 Made slightly darker/more opaque for contrast */
+  background: rgba(15, 23, 42, 0.8); 
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+
+  /* 🔥 Brighter border for better "pop" */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+
+  position: relative;
+  z-index: 2;
+  transform: translateZ(20px); 
 }
 
-.google-btn:hover {
-  background: #f1f5f9;
-}
+/* Card Shine (back layer) */
+.auth-card-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  z-index: 1;
 
-.google-icon {
-  width: 20px;
-  height: 20px;
+  background: radial-gradient(
+    circle at var(--bg-x) var(--bg-y), 
+    rgba(255, 255, 255, 0.12), 
+    transparent 40%
+  );
+  
+  transform: translateZ(5px); 
+  transition: background 0.1s linear;
 }

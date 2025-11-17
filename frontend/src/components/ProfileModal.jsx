@@ -2,6 +2,7 @@ import "../styles/ProfileModal.css";
 import { IoClose } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import FluidButton from "./FluidButton"; // 🔥 Import
 
 export default function ProfileModal({ isOpen, onClose }) {
   if (!isOpen) return null;
@@ -13,7 +14,6 @@ export default function ProfileModal({ isOpen, onClose }) {
     email: "",
   });
 
-  // Fetch user data
   useEffect(() => {
     api
       .get("/user/profile")
@@ -35,10 +35,8 @@ export default function ProfileModal({ isOpen, onClose }) {
   const handleSave = async () => {
     try {
       const res = await api.put("/user/profile", form);
-
       setUser(res.data.user);
       setEditMode(false);
-
       alert("Profile updated");
     } catch (err) {
       alert(err.response?.data?.message || "Update failed");
@@ -48,7 +46,6 @@ export default function ProfileModal({ isOpen, onClose }) {
   return (
     <div className="profile-overlay">
       <div className="profile-card">
-
         <button className="profile-close-btn" onClick={onClose}>
           <IoClose size={26} />
         </button>
@@ -67,13 +64,20 @@ export default function ProfileModal({ isOpen, onClose }) {
               <span className="role-badge member">Member</span>
             </div>
 
-            <button className="edit-btn" onClick={() => setEditMode(true)}>
+            {/* 🔥 Fluid Buttons */}
+            <FluidButton
+              style={{ width: "100%", marginTop: "12px" }}
+              onClick={() => setEditMode(true)}
+            >
               Edit Profile
-            </button>
-
-            <button className="logout-big-btn" onClick={handleLogout}>
+            </FluidButton>
+            <FluidButton
+              className="btn-danger"
+              style={{ width: "100%", marginTop: "12px" }}
+              onClick={handleLogout}
+            >
               Logout
-            </button>
+            </FluidButton>
           </>
         )}
 
@@ -102,16 +106,20 @@ export default function ProfileModal({ isOpen, onClose }) {
               />
             </div>
 
-            <button className="save-btn" onClick={handleSave}>
+            {/* 🔥 Fluid Buttons */}
+            <FluidButton
+              className="btn-primary"
+              style={{ width: "100%", marginTop: "10px" }}
+              onClick={handleSave}
+            >
               Save
-            </button>
-
-            <button
-              className="cancel-btn"
+            </FluidButton>
+            <FluidButton
+              style={{ width: "100%", marginTop: "12px" }}
               onClick={() => setEditMode(false)}
             >
               Cancel
-            </button>
+            </FluidButton>
           </div>
         )}
       </div>

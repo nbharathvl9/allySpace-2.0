@@ -17,7 +17,6 @@ body {
   font-family: "Inter", sans-serif; 
   -webkit-font-smoothing: antialiased;
   
-  /* Ensure no scroll from body itself */
   overflow-x: hidden; 
   width: 100%;
 }
@@ -58,20 +57,7 @@ body {
   color: #f8fafc;
 }
 
-.join-btn {
-  padding: 10px 22px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.join-btn:hover {
-  background: #1d4ed8;
-}
+/* 🔥 Removed .join-btn */
 
 /* ---------------- HERO SECTION ---------------- */
 .hero-sec {
@@ -82,7 +68,7 @@ body {
   gap: 100px;
 }
 
-/* ---------------- NEON BLOCKS ---------------- */
+/* ---------------- BLOCKS ---------------- */
 .neon-illustration {
   position: relative;
 }
@@ -104,7 +90,6 @@ body {
   backdrop-filter: blur(10px);
 }
 
-/* Floating cubes */
 .floating-cube {
   width: 70px;
   height: 70px;
@@ -147,17 +132,4 @@ body {
   color: #cbd5e1;
 }
 
-.watch-btn {
-  padding: 14px 28px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  cursor: pointer;
-  color: white;
-  background: rgba(255,255,255,0.05);
-  font-weight: 600;
-  transition: 0.2s;
-}
-
-.watch-btn:hover {
-  background: rgba(255,255,255,0.1);
-}
+/* 🔥 Removed .watch-btn */

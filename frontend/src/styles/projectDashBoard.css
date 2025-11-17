@@ -1,20 +1,18 @@
 .project-dashboard-wrapper {
   height: 100vh;
-  width: 100vw;
-
-  /* 🔥 REMOVED BACKGROUND: It now uses the global body background */
+  width: 100%;
   background: transparent; 
-  
   color: #f8fafc;
   font-family: 'Inter', sans-serif;
-
   display: flex;
   flex-direction: column;
 }
 
-/* CONTENT */
 .project-dashboard-content {
-  padding: 90px 80px;
+  padding: 40px 80px 90px 80px; /* Adjusted padding */
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
 }
 
 .pd-title {
@@ -26,60 +24,68 @@
 
 .pd-description {
   opacity: 0.75;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
   max-width: 600px;
+  font-size: 16px;
+  color: #cbd5e1;
 }
 
-/* GRID */
 .subproject-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 26px;
+  gap: 24px;
 }
 
-/* CARD: More professional glass */
 .subproject-card {
-  background: rgba(30, 41, 59, 0.4); /* Dark Slate Glass */
+  background: rgba(30, 41, 59, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 24px;
   backdrop-filter: blur(12px);
-  transition: 0.2s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 .subproject-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   background: rgba(30, 41, 59, 0.6);
   border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* HEADER */
 .sp-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 12px;
+}
+
+.sp-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f1f5f9;
 }
 
 .lead-badge {
   background: rgba(96, 165, 250, 0.1);
-  color: #60a5fa;
+  color: #93c5fd;
   padding: 4px 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
-/* DESCRIPTION */
 .sp-desc {
   opacity: 0.7;
   margin-bottom: 20px;
   font-size: 14px;
   line-height: 1.5;
+  flex-grow: 1; /* Make description fill space */
 }
 
-/* STATS */
 .sp-stats {
   display: flex;
   gap: 15px;
@@ -94,66 +100,30 @@
   color: #cbd5e1;
 }
 
-/* BUTTONS */
 .sp-actions {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
 }
 
-.sp-btn {
-  flex: 1;
-  padding: 10px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-  color: #e2e8f0;
-  font-size: 13px;
-  font-weight: 500;
-  transition: 0.2s;
-}
+/* 🔥 Removed .sp-btn styles */
+/* 🔥 Removed .delete-btn styles */
 
-.sp-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-/* DELETE BUTTON */
-.delete-btn {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  background: transparent;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #f87171;
-  cursor: pointer;
-  font-size: 13px;
-  transition: 0.2s;
-}
-
-.delete-btn:hover {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: #ef4444;
-}
-
-/* ADD SUBPROJECT */
 .add-subproject-card {
   border: 1px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
   padding: 30px;
   transition: 0.25s ease;
+  min-height: 200px;
 }
 
 .add-subproject-card:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(96, 165, 250, 0.05);
   border-color: #60a5fa;
 }
 
