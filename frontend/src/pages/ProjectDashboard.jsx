@@ -1,33 +1,53 @@
 import { useEffect, useState } from "react";
-import "../styles/projectDashboard.css";
-import Navbar from "../components/Navbar.jsx";
+import "../styles/projectDashBoard.css";
+import Navbar from "../components/navBar.jsx";
 import Sidebar from "../components/sidebar.jsx";
 import { useParams } from "react-router-dom";
 import AddSubprojectModal from "../components/AddSubProjectModal.jsx";
+import AssignTaskModal from "../components/AssignTaskModal.jsx";
+import ManageMembersModal from "../components/ManageMembersModal.jsx";
+import ViewResponsesModal from "../components/ViewResponsesModal.jsx";
 import api from "../api/axios";
+import FluidButton from "../components/FluidButton"; // 🔥 Import
 
 export default function ProjectDashboard() {
-  const { id } = useParams();  // MongoDB teamId
+  const { id } = useParams();
   const [project, setProject] = useState(null);
-  const [subModalOpen, setSubModalOpen] = useState(false);
 
-  useEffect(() => {
+  const [subModalOpen, setSubModalOpen] = useState(false);
+  const [assignTaskOpen, setAssignTaskOpen] = useState(false);
+  const [manageMembersOpen, setManageMembersOpen] = useState(false);
+  const [viewResponsesOpen, setViewResponsesOpen] = useState(false);
+  const [selectedSubteam, setSelectedSubteam] = useState(null);
+
+  const loadProject = () => {
     api
       .get(`/team/${id}`)
-      .then((res) => {
-        setProject(res.data.team);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .then((res) => setProject(res.data.team))
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    loadProject();
   }, [id]);
 
+  const handleDeleteSubteam = async (subteamId) => {
+    if (!confirm("Are you sure you want to delete this subteam?")) return;
+    try {
+      await api.delete(`/subteam/${subteamId}`);
+      loadProject();
+    } catch (err) {
+      alert("Failed to delete subteam");
+    }
+  };
+
+  const openModal = (setter, subteam) => {
+    setSelectedSubteam(subteam);
+    setter(true);
+  };
+
   if (!project)
-    return (
-      <div style={{ color: "white", padding: "40px" }}>
-        Loading project...
-      </div>
-    );
+    return <div style={{ color: "white", padding: "40px" }}>Loading...</div>;
 
   return (
     <div className="project-dashboard-wrapper">
@@ -36,10 +56,8 @@ export default function ProjectDashboard() {
 
       <div className="project-dashboard-content">
         <h1 className="pd-title">
-          {project.TeamName}
-          <span style={{ color: "#60a5fa" }}> Dashboard</span>
+          {project.TeamName} <span style={{ color: "#60a5fa" }}>Dashboard</span>
         </h1>
-
         <p className="pd-description">{project.description}</p>
 
         <div className="subproject-grid">
@@ -51,7 +69,6 @@ export default function ProjectDashboard() {
                   Lead: @{sp.headId?.userName || "Unassigned"}
                 </span>
               </div>
-
               <p className="sp-desc">{sp.description}</p>
 
               <div className="sp-stats">
@@ -59,16 +76,47 @@ export default function ProjectDashboard() {
                 <span>Tasks: {sp.tasks.length}</span>
               </div>
 
+              {/* 🔥 FLUID ACTION BUTTONS */}
               <div className="sp-actions">
-                <button className="sp-btn">Manage Members</button>
-                <button className="sp-btn">Assign Task</button>
+                <FluidButton
+                  style={{ flex: 1, fontSize: "13px", padding: "10px" }}
+                  onClick={() => openModal(setManageMembersOpen, sp)}
+                >
+                  Manage Members
+                </FluidButton>
+                <FluidButton
+                  style={{ flex: 1, fontSize: "13px", padding: "10px" }}
+                  onClick={() => openModal(setAssignTaskOpen, sp)}
+                >
+                  Assign Task
+                </FluidButton>
               </div>
 
-              <button className="delete-btn">Delete</button>
+              <FluidButton
+                style={{
+                  width: "100%",
+                  marginBottom: "10px",
+                  background: "rgba(96, 165, 250, 0.1)",
+                  borderColor: "rgba(96, 165, 250, 0.4)",
+                  color: "#93c5fd",
+                  fontSize: "13px",
+                  padding: "10px",
+                }}
+                onClick={() => openModal(setViewResponsesOpen, sp)}
+              >
+                View Responses
+              </FluidButton>
+
+              <FluidButton
+                className="btn-danger"
+                style={{ width: "100%", fontSize: "13px", padding: "10px" }}
+                onClick={() => handleDeleteSubteam(sp._id)}
+              >
+                Delete
+              </FluidButton>
             </div>
           ))}
 
-          {/* Add Subteam */}
           <div
             className="add-subproject-card"
             onClick={() => setSubModalOpen(true)}
@@ -79,11 +127,36 @@ export default function ProjectDashboard() {
         </div>
       </div>
 
+      {/* --- MODALS --- */}
       <AddSubprojectModal
         isOpen={subModalOpen}
         onClose={() => setSubModalOpen(false)}
         teamId={id}
       />
+
+      {selectedSubteam && (
+        <>
+          <AssignTaskModal
+            isOpen={assignTaskOpen}
+            onClose={() => setAssignTaskOpen(false)}
+            teamId={id}
+            subteamId={selectedSubteam._id}
+            headId={selectedSubteam.headId?._id}
+          />
+
+          <ManageMembersModal
+            isOpen={manageMembersOpen}
+            onClose={() => setManageMembersOpen(false)}
+            subteamId={selectedSubteam._id}
+          />
+
+          <ViewResponsesModal
+            isOpen={viewResponsesOpen}
+            onClose={() => setViewResponsesOpen(false)}
+            subteamId={selectedSubteam._id}
+          />
+        </>
+      )}
     </div>
   );
 }

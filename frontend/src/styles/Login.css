@@ -2,107 +2,180 @@
   font-size: 28px;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 8px;
   color: #f8fafc;
+  letter-spacing: -0.5px;
 }
 
+.auth-subtitle {
+  font-size: 16px;
+  text-align: center;
+  color: #94a3b8;
+  margin-bottom: 30px;
+}
 
-/* form layout */
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
 }
-
 
 .input-block {
   display: flex;
   flex-direction: column;
-}
-
-.input-block label {
-  color: #e5e7eb;
-  margin-bottom: 6px;
-  font-weight: 700;
-}
-
-/* white-ish glass inputs inside the card */
-.input-block input {
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.08);
-
-  font-size: 15px;
-  color: #f1f5f9;
-
-  transition: 0.25s ease;
-}
-
-
-.input-block input::placeholder {
-  color: rgba(15, 23, 42, 0.55);
-}
-
-.input-block input:focus {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
-  outline: none;
-}
-
-
-.password-wrapper {
   position: relative;
 }
 
-.password-wrapper input {
+.input-block label {
+  color: #cbd5e1;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Wrapper for icon + input */
+.input-wrapper {
+  position: relative;
+}
+
+/* Icon styles */
+.input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  z-index: 2;
+  pointer-events: none;
+  transition: color 0.25s ease;
+}
+
+.input-block input {
   width: 100%;
+  padding: 14px 14px 14px 48px; /* Left padding for icon */
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 15px;
+  color: #f1f5f9;
+  transition: 0.25s ease;
+  outline: none;
+  caret-color: #60a5fa;
+  
+  /* 🔥 Fix: Input field must be on top */
+  position: relative;
+  z-index: 3;
+}
+
+.input-block input::placeholder {
+  color: #64748b;
+}
+
+.input-block input:focus {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+
+.input-block input:focus ~ .input-icon {
+  color: #60a5fa;
+}
+
+
+/* ========================================= */
+/* 🔥 PASSWORD CURTAIN (FIXED)               */
+/* ========================================= */
+.password-wrapper {
+  position: relative;
+  overflow: hidden; 
+  border-radius: 12px;
+  
+  /* 🔥 Fix: Wrapper gets the base styles */
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+/* 🔥 Fix: Isolate input from wrapper styles */
+.password-wrapper input {
+  border: none;
+  background: transparent; /* Input is see-through */
+  z-index: 3; /* Input is ON TOP of curtain */
+}
+
+/* 🔥 Fix: Remove focus from input, apply to wrapper */
+.password-wrapper input:focus {
+  box-shadow: none;
+  border-color: transparent;
+  background: transparent;
+}
+
+.password-wrapper:focus-within {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+.password-wrapper:focus-within .input-icon {
+  color: #60a5fa;
+}
+
+
+.password-curtain {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* This is the dark background for "hidden" text */
+  background: #0f172a; 
+  z-index: 2; /* 🔥 BEHIND the input */
+
+  /* Default state: DOWN (visible) */
+  transform: translateY(0);
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+}
+
+/* When password IS visible (data-visible="true") */
+.password-wrapper[data-visible="true"] .password-curtain {
+  transform: translateY(-100%); /* Curtain moves UP */
 }
 
 .toggle-password {
   position: absolute;
-  right: 12px;
-  top: 10px;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
-  font-size: 18px;
-  color: var(--primary);
+  font-size: 20px;
+  color: #94a3b8;
+  transition: 0.2s;
+  z-index: 4; /* 🔥 ABOVE the input */
+}
+.toggle-password:hover {
+  color: #f1f5f9;
 }
 
-/* Button: same color family (blue) */
-.auth-btn {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-
-  background: linear-gradient(135deg, #3b82f6, #60a5fa);
-  color: white;
-  font-weight: 600;
-  font-size: 16px;
-
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
-  transition: 0.25s ease;
+.password-wrapper .input-icon {
+  z-index: 4; /* 🔥 ABOVE the input */
 }
+/* ========================================= */
 
-.auth-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45);
-}
 .auth-footer {
-  margin-top: 8px;
+  margin-top: 15px;
   text-align: center;
-  color: #e5e7eb;
+  color: #94a3b8;
   font-size: 14px;
 }
 
 .auth-footer a {
-  color: var(--primary);
+  color: var(--primary-light);
   font-weight: 600;
   text-decoration: none;
+  transition: 0.2s;
 }
 
 .auth-footer a:hover {
   text-decoration: underline;
+  color: #fff;
 }

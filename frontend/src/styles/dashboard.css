@@ -1,50 +1,80 @@
+/* ============================ */
+/*  MERGED / DE-DUPLICATED CSS  */
+/* ============================ */
+
+/* SMALL UTILS */
+* { box-sizing: border-box; }
+
 /* FULL WRAPPER */
 .dashboard-wrapper {
-  height: 100vh;
-  width: 100vw;
-
+  min-height: 100vh;
+  /* 100% is safer than 100vw (avoids scrollbar issue) */
+  width: 100%;
   color: #f8fafc;
   font-family: 'Inter', sans-serif;
-  
-  min-height: 100vh;
   background: transparent;
-
-
   display: flex;
   flex-direction: column;
-
-  position: relative; /* Safe */
+  position: relative;
   z-index: 1;
 }
 
-/* NAVBAR */
+/* ========================================= */
+/* 💎 FLOATING NAVBAR (single combined block) */
+/* ========================================= */
 .dashboard-navbar {
-  height: 76px;
+  height: 75px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 34px;
+  padding: 0 30px;
 
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(18px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  z-index: 10; /* Stay below modals */
+  /* Floating Style */
+  margin: 20px 24px 0 24px;
+  width: calc(100% - 48px);
+  border-radius: 24px;
+
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+  z-index: 50;
+  transition: all 0.3s ease;
 }
 
-/* LEFT */
+/* LEFT SECTION */
 .nav-left {
   display: flex;
   align-items: center;
+  gap: 24px;
 }
 
+/* Optional hamburger (kept) */
 .hamburger {
-  font-size: 27px;
+  font-size: 20px;
   cursor: pointer;
+  color: #94a3b8;
+  transition: 0.2s ease;
+}
+.hamburger:hover {
   color: #f8fafc;
-  transition: 0.25s ease;
+  transform: scale(1.1);
 }
 
-/* CENTER */
+/* Branding */
+.nav-brand {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: -0.5px;
+  user-select: none;
+}
+.nav-brand span { color: #60a5fa; }
+
+/* CENTER (search) */
 .nav-center {
   flex: 1;
   display: flex;
@@ -55,115 +85,364 @@
   display: flex;
   align-items: center;
   gap: 12px;
-
   width: 300px;
-  padding: 12px 16px;
-
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 10px 18px;
+  background: rgba(2, 6, 23, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  transition: 0.35s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.nav-search svg { color: #64748b; transition: 0.3s; }
+
 .nav-search input {
+  width: 100%;
   border: none;
   background: transparent;
   outline: none;
-  color: #f1f5f9;
-  font-size: 15px;
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 500;
 }
-
-.nav-search input::placeholder {
-  color: rgba(255, 255, 255, 0.48);
-}
+.nav-search input::placeholder { color: #64748b; }
 
 .nav-search:focus-within {
   width: 420px;
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+  background: rgba(2, 6, 23, 0.6);
+  border-color: rgba(96, 165, 250, 0.5);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
+.nav-search:focus-within svg { color: #60a5fa; }
 
 /* RIGHT */
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 26px;
+  gap: 20px;
 }
 
+/* 🔥 BOUNCY ICONS (single unified nav-icon) */
 .nav-icon {
-  font-size: 23px;
+  font-size: 22px;
   cursor: pointer;
+  color: #94a3b8;
+  transition: 0.2s;
+}
+.nav-icon:hover {
   color: #f8fafc;
-  transition: 0.25s;
+  transform: translateY(-2px);
+}
+.nav-icon:active { transform: scale(0.9); }
+
+/* Notification wrapper + badge */
+
+.notif-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* PROFILE ICON */
-.profile-pic {
-  width: 40px;
-  height: 40px;
-  background: url("https://i.pravatar.cc/150") center/cover;
+/* 🔥 Red Notification Dot */
+.notif-badge {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  cursor: pointer;
+  border: 2px solid rgba(15, 23, 42, 1); /* outer border */
+  pointer-events: none;
+  z-index: 99;
 }
 
-/* LOGOUT */
+
+/* 🔥 BOUNCY PROFILE PIC (final unified) */
+.profile-pic {
+  width: 42px;   /* slightly larger, circular */
+  height: 42px;
+  background: url("https://api.dicebear.com/7.x/avataaars/svg?seed=Felix") center/cover;
+  background-color: #1e293b;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.profile-pic:hover {
+  border-color: #60a5fa;
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
+}
+.profile-pic:active { transform: scale(0.95); }
+
+/* Logout button */
 .logout-btn {
-  padding: 10px 18px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #3b82f6, #60a5fa);
-  border: none;
-  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.25s ease;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
+  transition: all 0.2s ease;
 }
-
 .logout-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45);
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
-/* CONTENT */
+/* CONTENT (unified) */
 .dashboard-content {
-  padding: 64px 80px;
-  max-width: 1100px;
+  padding: 40px 80px;
+  max-width: 1400px; /* keep generous layout */
+  margin: 0 auto;
+  width: 100%;
   z-index: 1;
 }
 
-/* TITLE */
+/* Titles and subtitles */
 .dashboard-title {
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: #f8fafc;
 }
-
 .dashboard-subtitle {
-  margin-top: 10px;
-  opacity: 0.75;
+  margin-top: 8px;
+  opacity: 0.7;
   font-size: 16px;
+  font-weight: 400;
+  color: #94a3b8;
 }
 
-/* CARD */
+/* Section */
+.section-title {
+  margin-top: 60px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #e2e8f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+}
+
+/* Project Card Grid */
+.project-card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+/* Dashboard Card */
 .dashboard-card {
-  width: 100%;
-  padding: 32px;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(18px);
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-
-  margin-top: 32px;
-  z-index: 1; /* ▼ DO NOT overlap modals */
+  padding: 28px;
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
-
-.clickable-card {
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.clickable-card:hover {
+.dashboard-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(96, 165, 250, 0.3);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+}
+.dashboard-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #f1f5f9;
+}
+.dashboard-card p {
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.5;
+}
+/* ... existing styles ... */
+
+/* ========================================= */
+/* 🔥 ENHANCED SEARCH DROPDOWN               */
+/* ========================================= */
+.search-results {
+  position: absolute;
+  top: 60px; /* Slight gap from input */
+  left: 0;
+  width: 100%;
+  
+  /* Deep Glass Effect */
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 20px 40px -5px rgba(0, 0, 0, 0.4), 
+    0 0 0 1px rgba(255, 255, 255, 0.05); /* Inner glow ring */
+    
+  max-height: 420px;
+  overflow-y: auto;
+  z-index: 100;
+  padding: 10px;
+
+  /* Entrance Animation */
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+  animation: searchMenuEnter 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes searchMenuEnter {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Individual Result Group (Project) */
+.search-result-item {
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 6px;
+  transition: background 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.search-result-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.search-result-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Project Title */
+.search-result-item h4 {
+  color: #f1f5f9;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Blue Accent Bar for Title */
+.search-result-item h4::before {
+  content: '';
+  display: block;
+  width: 3px;
+  height: 14px;
+  background: #60a5fa;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.6);
+}
+
+/* Subteam Container */
+.subteam-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 14px;
+  margin-left: 1px;
+  border-left: 2px solid rgba(255, 255, 255, 0.06); /* Guide line */
+}
+
+/* Subteam Item */
+.subteam-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  background: rgba(255, 255, 255, 0.04);
+  padding: 10px 14px;
+  border-radius: 10px;
+  
+  font-size: 13px;
+  color: #cbd5e1;
+  border: 1px solid transparent;
+  
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.subteam-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px); /* Satisfying nudge */
+  color: #fff;
+}
+
+.subteam-item span {
+  font-weight: 500;
+}
+
+/* Empty State Text */
+.subteam-list span {
+  padding-left: 10px;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* Custom Scrollbar for Results */
+.search-results::-webkit-scrollbar {
+  width: 5px;
+}
+.search-results::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 10px 0;
+}
+.search-results::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+.search-results::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+/* 🔥 NOTIFICATION ACTIONS */
+.notif-actions-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  width: 100%;
+}
+.floating-chat-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  
+  /* Gradient to match your theme */
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Glow and Border */
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  cursor: pointer;
+  z-index: 100; /* Ensure it's on top */
+  
+  /* Bouncy Transition */
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+}
+
+.floating-chat-btn:hover {
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 15px 35px rgba(59, 130, 246, 0.6);
+}
+
+.floating-chat-btn:active {
+  transform: scale(0.95);
+}
+
+.floating-chat-btn svg {
+  color: white;
 }

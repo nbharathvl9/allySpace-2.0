@@ -1,9 +1,9 @@
 import "../styles/createProject.css";
 import { IoClose } from "react-icons/io5";
-import api from "../api/axios";   // IMPORTANT
+import api from "../api/axios";
+import FluidButton from "./FluidButton"; // 🔥 Import
 
 export default function CreateProjectModal({ isOpen, onClose }) {
-
   const handleCreate = async () => {
     const title = document.getElementById("project-title").value.trim();
     const desc = document.getElementById("project-desc").value.trim();
@@ -11,21 +11,14 @@ export default function CreateProjectModal({ isOpen, onClose }) {
     if (!title) return alert("Project title is required");
 
     try {
-      // 🔥 CALL BACKEND
-      const res = await api.post("/team/create", {
+      await api.post("/team/create", {
         TeamName: title,
         description: desc,
       });
-
       alert("Project created!");
-
       onClose();
-
-      // Refresh so sidebar loads new project
       window.location.reload();
-
     } catch (err) {
-      console.log(err);
       alert(err.response?.data?.message || "Failed to create project");
     }
   };
@@ -35,7 +28,6 @@ export default function CreateProjectModal({ isOpen, onClose }) {
   return (
     <div className="modal-overlay">
       <div className="modal-card">
-
         <button className="modal-close-btn" onClick={onClose}>
           <IoClose size={26} />
         </button>
@@ -52,10 +44,14 @@ export default function CreateProjectModal({ isOpen, onClose }) {
           <textarea id="project-desc" placeholder="Enter description"></textarea>
         </div>
 
-        <button className="modal-create-btn" onClick={handleCreate}>
+        {/* 🔥 Fluid Button */}
+        <FluidButton
+          className="btn-primary"
+          style={{ width: "100%", marginTop: "8px", padding: "14px" }}
+          onClick={handleCreate}
+        >
           Create Project
-        </button>
-
+        </FluidButton>
       </div>
     </div>
   );

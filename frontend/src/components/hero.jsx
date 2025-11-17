@@ -1,10 +1,10 @@
 import React from "react";
 import "../index.css";
+import FluidButton from "./FluidButton"; // 🔥 Import
 
 const Hero = () => {
   return (
     <section className="hero-sec">
-
       <div className="neon-illustration">
         <div className="cube-stack">
           <div className="cube neon"></div>
@@ -20,14 +20,17 @@ const Hero = () => {
       <div className="hero-text">
         <h1>Maintain Co-Ordination Like a Pro</h1>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-          Elit incidunt ut labore magna aliqua. Ut enim ad minim.
+          Manage your teams, assign tasks, and track progress all in one
+          centralized, fluid dashboard.
         </p>
 
-        <button className="watch-btn">▶ Watch The Video</button>
+        {/* 🔥 Fluid Button */}
+        <FluidButton style={{ padding: "14px 28px" }}>
+          ▶ Watch The Video
+        </FluidButton>
       </div>
     </section>
   );
-};
+}; // 🔥 Added the missing semicolon here
 
-export default Hero;
+export default Hero; // 🔥 Added the missing export

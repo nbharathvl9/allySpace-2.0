@@ -1,6 +1,4 @@
+/* Imports all styles from Login.css */
 @import "./Login.css";
 
-/* keep same blue button, or make slightly lighter if you want */
-.auth-btn.signup {
-  background: linear-gradient(135deg, var(--primary), #60a5fa);
-}
+/* No other styles needed, it now matches Login */

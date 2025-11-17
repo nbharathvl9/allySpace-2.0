@@ -1,9 +1,9 @@
 import { IoClose } from "react-icons/io5";
 import "../styles/createProject.css";
 import api from "../api/axios";
+import FluidButton from "./FluidButton"; // 🔥 Import
 
 export default function AddSubprojectModal({ isOpen, onClose, teamId }) {
-
   const handleCreate = async () => {
     const title = document.getElementById("sub-title").value.trim();
     const desc = document.getElementById("sub-desc").value.trim();
@@ -14,20 +14,16 @@ export default function AddSubprojectModal({ isOpen, onClose, teamId }) {
     }
 
     try {
-      // 🔥 Send invite to subproject head
-      const res = await api.post("/subteam/invite-subteam-head", {
+      await api.post("/subteam/invite-subteam-head", {
         teamId,
         name: title,
         description: desc,
-        headUserName: lead
+        headUserName: lead,
       });
-
       alert("Subteam request sent!");
       onClose();
       window.location.reload();
-
     } catch (err) {
-      console.log(err);
       alert(err.response?.data?.message || "Failed to create subproject");
     }
   };
@@ -37,7 +33,6 @@ export default function AddSubprojectModal({ isOpen, onClose, teamId }) {
   return (
     <div className="modal-overlay">
       <div className="modal-card">
-
         <button className="modal-close-btn" onClick={onClose}>
           <IoClose size={26} />
         </button>
@@ -59,10 +54,14 @@ export default function AddSubprojectModal({ isOpen, onClose, teamId }) {
           <input id="sub-lead" placeholder="Enter username" />
         </div>
 
-        <button className="modal-create-btn" onClick={handleCreate}>
+        {/* 🔥 Fluid Button */}
+        <FluidButton
+          className="btn-primary"
+          style={{ width: "100%", marginTop: "8px", padding: "14px" }}
+          onClick={handleCreate}
+        >
           Send Invite
-        </button>
-
+        </FluidButton>
       </div>
     </div>
   );

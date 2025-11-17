@@ -1,11 +1,40 @@
-/* GLOBAL BACKGROUND */
+/* 🔥 GLOBAL RESET: This fixes the scrollbar issue */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* GLOBAL BACKGROUND: Professional Midnight Slate */
 body {
-  background: radial-gradient(circle at top left, #3a0ca3, #240046, #10002b);
-  color: white;
-  background-attachment: fixed;   /* 🔥 FIXED BACKGROUND */
+  background: radial-gradient(circle at 50% 0%, #1e293b, #0f172a, #020617);
+  color: #f8fafc;
+  
+  background-attachment: fixed;
   background-size: cover;
   background-repeat: no-repeat;
-  font-family: "Poppins", sans-serif;
+  
+  font-family: "Inter", sans-serif; 
+  -webkit-font-smoothing: antialiased;
+  
+  overflow-x: hidden; 
+  width: 100%;
+}
+
+/* 🔥 GLOBAL SCROLLBAR STYLES */
+body::-webkit-scrollbar {
+  width: 12px;
+  background-color: #0f172a; /* Dark track background */
+}
+
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  border: 3px solid #0f172a; /* Creates a nice padding effect */
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* ---------------- NAVBAR ---------------- */
@@ -19,12 +48,12 @@ body {
 .nav-logo {
   font-size: 23px;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: -0.5px;
+  color: #f8fafc;
 }
 
 .nav-logo span {
-  font-size: 27px;
-  color: #00f7ff;
+  color: #60a5fa;
   font-weight: 700;
 }
 
@@ -35,34 +64,27 @@ body {
 
 .nav-links a {
   text-decoration: none;
-  color: #c7c7ff;
+  color: #94a3b8;
   font-weight: 500;
   transition: 0.2s;
 }
 
 .nav-links a:hover {
-  color: #00e1ff;
+  color: #f8fafc;
 }
 
-.join-btn {
-  padding: 10px 22px;
-  background: linear-gradient(90deg, #7dffcf, #00eaff);
-  border: none;
-  border-radius: 20px;
-  font-weight: 600;
-  cursor: pointer;
-}
+/* 🔥 Removed .join-btn */
 
 /* ---------------- HERO SECTION ---------------- */
 .hero-sec {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 70px 6%;
+  padding: 80px 6%;
   gap: 100px;
 }
 
-/* ---------------- NEON BLOCKS ---------------- */
+/* ---------------- BLOCKS ---------------- */
 .neon-illustration {
   position: relative;
 }
@@ -77,23 +99,21 @@ body {
 .cube {
   width: 150px;
   height: 150px;
-  background: #0d0d2b;
-  border: 3px solid #00f7ff;
-  border-radius: 8px;
-  box-shadow:
-    0 0 15px #00f7ff,
-    inset 0 0 10px #00f7ff;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid #60a5fa;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.15);
+  backdrop-filter: blur(10px);
 }
 
-/* Floating cubes */
 .floating-cube {
   width: 70px;
   height: 70px;
-  background: #0d0d2b;
-  border: 2px solid #00eaff;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid #93c5fd;
   position: absolute;
-  border-radius: 6px;
-  box-shadow: 0 0 12px #00eaff;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(147, 197, 253, 0.1);
   animation: float 4s ease-in-out infinite;
 }
 
@@ -109,55 +129,78 @@ body {
 
 /* ---------------- TEXT AREA ---------------- */
 .hero-text {
-  max-width: 480px;
+  max-width: 500px;
 }
 
 .hero-text h1 {
-  font-size: 42px;
-  font-weight: 700;
-  line-height: 1.3;
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
 }
 
 .hero-text p {
-  margin-top: 20px;
-  margin-bottom: 30px;
-  opacity: 0.8;
-  font-size: 16px;
+  margin-bottom: 35px;
+  opacity: 0.7;
+  font-size: 17px;
   line-height: 1.6;
+  color: #cbd5e1;
 }
 
-.watch-btn {
-  padding: 12px 25px;
-  border-radius: 30px;
-  border: none;
-  cursor: pointer;
-  color: black;
-  background: linear-gradient(90deg, #7dffcf, #00eaff);
+/* 🔥 Removed .watch-btn */
+
+/* ... existing code ... */
+
+/* ---------------- NAVBAR ---------------- */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 6%;
+}
+
+.nav-logo {
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #f8fafc;
+}
+
+.nav-logo span {
+  color: #60a5fa;
+  font-weight: 700;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px; /* Reduced gap slightly to fit the buttons */
+}
+
+/* 🔥 BOUNCY BUBBLY LINKS */
+.nav-links a {
+  text-decoration: none;
+  color: #cbd5e1;
   font-weight: 600;
-  transition: 0.2s;
+  padding: 10px 20px;
+  border-radius: 30px; /* Bubbly shape */
+  background: transparent;
+  border: 1px solid transparent;
+  
+  /* 🎈 Bouncy Transition */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.watch-btn:hover {
-  opacity: 0.85;
+.nav-links a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-3px) scale(1.1); /* Bounce up and grow */
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3); /* Drop shadow */
 }
 
-/* Global Font */
-body {
-  font-family: 'Poppins', sans-serif;
+.nav-links a:active {
+  transform: translateY(0) scale(0.95); /* Squish effect on click */
 }
 
-/* Futuristic Heading Font */
-.hero-text h1 {
-  font-family: 'Orbitron', sans-serif;
-  letter-spacing: 1px;
-}
-
-.nav, .nav-links a, .join-btn {
-  font-family: 'Poppins', sans-serif;
-}
-
-.watch-btn, .join-btn {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-}
-
+/* ... rest of your css ... */

@@ -22,4 +22,18 @@ router.get("/", protectRoute, async (req, res) => {
   }
 });
 
+// MARK ALL AS READ
+router.put("/mark-read", protectRoute, async (req, res) => {
+  try {
+    await Notification.updateMany(
+      { recipientId: req.user._id, isRead: false },
+      { $set: { isRead: true } }
+    );
+    res.json({ message: "Notifications marked as read" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;

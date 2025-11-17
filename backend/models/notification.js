@@ -5,8 +5,7 @@ const NotificationSchema = new mongoose.Schema({
   senderId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   teamId: { type: mongoose.Schema.Types.ObjectId, ref: "Team" },
   subteamId: { type: mongoose.Schema.Types.ObjectId, ref: "Subteam" },
-inviteId: { type: mongoose.Schema.Types.ObjectId, ref: "SubteamInvite" },  // ADD THIS  
-
+  inviteId: { type: mongoose.Schema.Types.ObjectId, ref: "SubteamInvite" },
 
   type: {
     type: String,
@@ -14,7 +13,9 @@ inviteId: { type: mongoose.Schema.Types.ObjectId, ref: "SubteamInvite" },  // AD
       "SUBTEAM_HEAD_INVITE",
       "SUBTEAM_MEMBER_INVITE",
       "INVITE_ACCEPTED",
-      "INVITE_REJECTED"
+      "INVITE_REJECTED",
+      "TASK_RESPONSE",
+      "JOIN_REQUEST" // 🔥 ADDED
     ],
     required: true
   },
