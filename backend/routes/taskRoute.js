@@ -94,34 +94,26 @@ router.post("/respond", protectRoute, async (req, res) => {
     const isMember = subteam.members.includes(req.user._id);
 
     // ---------------------
-    // RULE A: Subteam Head → responds to Team Head
+    // Determine Recipient (Team Head or Subteam Head)
     // ---------------------
-    if (isSubteamHead) {
-      await Notification.create({
-        recipientId: team.TeamHId,
-        senderId: req.user._id,
-        teamId: team._id,
-        type: "TASK_RESPONSE",
-        message: message || `Subteam Head responded to task: ${task.title}`
-      });
-    }
+    let recipientId = null;
+    if (isSubteamHead) recipientId = team.TeamHId;
+    if (isMember) recipientId = subteam.headId;
 
-    // ---------------------
-    // RULE B: Member → responds to Subteam Head
-    // ---------------------
-    if (isMember) {
+    if (recipientId) {
       await Notification.create({
-        recipientId: subteam.headId,
+        recipientId: recipientId,
         senderId: req.user._id,
         teamId: team._id,
+        subteamId: subteam._id, // 🔥 ADDED THIS to allow path tracking
         type: "TASK_RESPONSE",
-        message: message || `Member responded to task: ${task.title}`
+        message: message || `User responded to task: ${task.title}`
       });
     }
 
     // Update task fields
     task.status = status;
-    task.responseMessage = message;   // <-- NEW LINE
+    task.responseMessage = message; 
     await task.save();
 
     res.json({

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { createPortal } from "react-dom"; // 🔥 Import Portal
+import { createPortal } from "react-dom"; 
 import "../styles/notif.css";
 import api from "../api/axios";
 import FluidButton from "./FluidButton";
-import { FiInbox } from "react-icons/fi"; // Import an icon
+import { FiInbox } from "react-icons/fi"; 
 
 export default function NotificationDropdown({ close }) {
   const [notifs, setNotifs] = useState([]);
@@ -65,6 +65,19 @@ export default function NotificationDropdown({ close }) {
           <div key={n._id} className="notif-item">
             <p className="notif-msg">{n.message}</p>
 
+            {/* 🔥 PATH DISPLAY for Task Responses */}
+            {n.type === "TASK_RESPONSE" && (
+              <p style={{ 
+                fontSize: "12px", 
+                color: "#60a5fa", 
+                marginTop: "6px",
+                fontWeight: "500",
+                opacity: 0.8
+              }}>
+                {`{ ${n.senderId?.userName || 'Unknown'} / ${n.subteamId?.name || 'Unknown'} / ${n.teamId?.TeamName || 'Unknown'} }`}
+              </p>
+            )}
+
             {n.status === "Pending" &&
               (n.type === "SUBTEAM_HEAD_INVITE" ||
                 n.type === "SUBTEAM_MEMBER_INVITE") && (
@@ -89,6 +102,6 @@ export default function NotificationDropdown({ close }) {
         ))}
       </div>
     </div>,
-    document.body // Target document.body
+    document.body 
   );
 }
