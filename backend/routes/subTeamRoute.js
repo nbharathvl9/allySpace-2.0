@@ -16,7 +16,6 @@ router.get("/return-subteams/:id", async (req, res) => {
   try {
     const subteamId = req.params.id;
 
-    // Step 1: Find subteam + populate all members
     const subteam = await Subteam.findById(subteamId)
       .populate("members", "userName email")
       .lean();
@@ -25,13 +24,13 @@ router.get("/return-subteams/:id", async (req, res) => {
       return res.status(404).json({ message: "Subteam not found" });
     }
 
-    // Step 2: Get all tasks in this subteam
+    // Fetch all tasks for this subteam
     const tasks = await Task.find({ subteamId }).lean();
 
-    // Step 3: Attach tasks to members
     const membersWithTaskInfo = subteam.members.map((member) => {
+      // 🔥 FIX: Force string comparison to ensure match
       const task = tasks.find(
-        (t) => t.assignedTo?.toString() === member._id.toString()
+        (t) => String(t.assignedTo) === String(member._id)
       );
 
       return {
@@ -39,6 +38,8 @@ router.get("/return-subteams/:id", async (req, res) => {
         userName: member.userName,
         email: member.email,
 
+        taskId: task ? task._id : null, // Used for responding
+        
         assignedTask: task ? task.title : "No task assigned",
         description: task ? task.description : "",
         status: task ? task.status : "Pending",
@@ -49,7 +50,7 @@ router.get("/return-subteams/:id", async (req, res) => {
 
     res.json({
       subteamName: subteam.name,
-      teamId: subteam.teamId, // 🔥 ADDED: Required for Assign Task Modal
+      teamId: subteam.teamId,
       members: membersWithTaskInfo,
     });
 
@@ -550,5 +551,57 @@ router.post("/join/reject", protectRoute, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
+// ---------------------------------------------------------
+// 1. GET MEMBERS + TASKS (Updated with taskId)
+// ---------------------------------------------------------
+router.get("/return-subteams/:id", async (req, res) => {
+  try {
+    const subteamId = req.params.id;
+
+    const subteam = await Subteam.findById(subteamId)
+      .populate("members", "userName email")
+      .lean();
+
+    if (!subteam) {
+      return res.status(404).json({ message: "Subteam not found" });
+    }
+
+    const tasks = await Task.find({ subteamId }).lean();
+
+    const membersWithTaskInfo = subteam.members.map((member) => {
+      const task = tasks.find(
+        (t) => t.assignedTo?.toString() === member._id.toString()
+      );
+
+      return {
+        _id: member._id,
+        userName: member.userName,
+        email: member.email,
+
+        // 🔥 ADDED taskId
+        taskId: task ? task._id : null,
+        
+        assignedTask: task ? task.title : "No task assigned",
+        description: task ? task.description : "",
+        status: task ? task.status : "Pending",
+        deadline: task ? task.deadline : null,
+        responseMessage: task ? task.responseMessage : "" 
+      };
+    });
+
+    res.json({
+      subteamName: subteam.name,
+      teamId: subteam.teamId,
+      members: membersWithTaskInfo,
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 module.exports = router;
