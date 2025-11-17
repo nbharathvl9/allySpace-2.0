@@ -1,10 +1,12 @@
 import "../styles/ProfileModal.css";
 import { IoClose } from "react-icons/io5";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom"; // 🔥 Import Portal
 import api from "../api/axios";
-import FluidButton from "./FluidButton"; // 🔥 Import
+import FluidButton from "./FluidButton"; 
 
 export default function ProfileModal({ isOpen, onClose }) {
+  // Prevent rendering if not open
   if (!isOpen) return null;
 
   const [user, setUser] = useState(null);
@@ -14,6 +16,7 @@ export default function ProfileModal({ isOpen, onClose }) {
     email: "",
   });
 
+  // Fetch user data
   useEffect(() => {
     api
       .get("/user/profile")
@@ -43,9 +46,11 @@ export default function ProfileModal({ isOpen, onClose }) {
     }
   };
 
-  return (
+  // 🔥 USE PORTAL: Moves this HTML outside of Navbar and into Body
+  return createPortal(
     <div className="profile-overlay">
       <div className="profile-card">
+
         <button className="profile-close-btn" onClick={onClose}>
           <IoClose size={26} />
         </button>
@@ -64,13 +69,14 @@ export default function ProfileModal({ isOpen, onClose }) {
               <span className="role-badge member">Member</span>
             </div>
 
-            {/* 🔥 Fluid Buttons */}
+            {/* Fluid Buttons */}
             <FluidButton
               style={{ width: "100%", marginTop: "12px" }}
               onClick={() => setEditMode(true)}
             >
               Edit Profile
             </FluidButton>
+            
             <FluidButton
               className="btn-danger"
               style={{ width: "100%", marginTop: "12px" }}
@@ -106,7 +112,6 @@ export default function ProfileModal({ isOpen, onClose }) {
               />
             </div>
 
-            {/* 🔥 Fluid Buttons */}
             <FluidButton
               className="btn-primary"
               style={{ width: "100%", marginTop: "10px" }}
@@ -114,6 +119,7 @@ export default function ProfileModal({ isOpen, onClose }) {
             >
               Save
             </FluidButton>
+            
             <FluidButton
               style={{ width: "100%", marginTop: "12px" }}
               onClick={() => setEditMode(false)}
@@ -123,6 +129,7 @@ export default function ProfileModal({ isOpen, onClose }) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body // 🔥 Target container
   );
 }
