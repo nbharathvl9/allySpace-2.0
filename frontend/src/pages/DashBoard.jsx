@@ -4,7 +4,7 @@ import "../styles/dashboard.css";
 import Sidebar from "../components/sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
-
+import { FiMessageSquare } from "react-icons/fi"; // 1. Import Icon
 export default function Dashboard() {
   const [projects, setProjects] = useState([]);
   const navigate = useNavigate();
@@ -72,6 +72,9 @@ export default function Dashboard() {
           )}
         </div>
 
+      </div>
+      <div className="floating-chat-btn" onClick={() => navigate("/chat")}>
+        <FiMessageSquare size={24} />
       </div>
     </div>
   );

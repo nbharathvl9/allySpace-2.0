@@ -104,6 +104,21 @@ router.delete("/notifications/:id", protectRoute, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+router.get("/search", protectRoute, async (req, res) => {
+  try {
+    const { query } = req.query;
+    if (!query) return res.json([]);
+
+    const users = await User.find({
+      userName: { $regex: query, $options: "i" },
+      _id: { $ne: req.user._id } // Don't find yourself
+    }).select("userName email");
+
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 
 
