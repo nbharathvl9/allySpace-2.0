@@ -1,23 +1,40 @@
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import "../styles/dashboard.css";
 import Sidebar from "../components/sidebar.jsx";
-import { useProjects } from "../context/projectContext.jsx";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 export default function Dashboard() {
-  const { projects, viewMode, getSubteamsForUser } = useProjects(); // ← hook inside component
+  const [projects, setProjects] = useState([]);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    window.location.href = "/login";
+  // Fetch projects from backend
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        // Matches the route in teamRoute.js: router.get("/head", ...)
+        const res = await api.get("/team/head");
+        setProjects(res.data.teams);
+      } catch (err) {
+        console.error("Failed to fetch projects:", err);
+      }
+    };
+    fetchProjects();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+      window.location.href = "/login";
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
   };
 
-  const openProject = (index) => {
-    navigate(`/project/${index}`);
+  const openProject = (id) => {
+    navigate(`/project/${id}`);
   };
-
-  // If you want to show subteams view inside dashboard later:
-  // const mySubteams = getSubteamsForUser();
 
   return (
     <div className="dashboard-wrapper">
@@ -44,13 +61,14 @@ export default function Dashboard() {
               No projects yet. Create one from the sidebar!
             </p>
           ) : (
-            projects.map((project, index) => (
+            projects.map((project) => (
               <div
-                key={index}
+                key={project._id}
                 className="dashboard-card clickable-card"
-                onClick={() => openProject(index)}
+                onClick={() => openProject(project._id)}
               >
-                <h3>{project.title}</h3>
+                {/* Backend uses 'TeamName', not 'title' */}
+                <h3>{project.TeamName}</h3>
                 <p>{project.description}</p>
 
                 <p
@@ -60,7 +78,8 @@ export default function Dashboard() {
                     color: "#60a5fa",
                   }}
                 >
-                  Subprojects: {project.subprojects.length}
+                  {/* Backend Subteams is an array of IDs */}
+                  Subprojects: {project.Subteams?.length || 0}
                 </p>
               </div>
             ))

@@ -31,12 +31,30 @@ export default function Sidebar() {
     closeSidebar();
   };
 
+  // 🔥 FLUID EFFECT LOGIC
+  // Calculates mouse position relative to the button and sets CSS variables
+  const handleMouseMove = (e) => {
+    const btn = e.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    btn.style.setProperty("--x", `${x}px`);
+    btn.style.setProperty("--y", `${y}px`);
+  };
+
   return (
     <>
+      {/* Overlay for closing */}
+      <div 
+        className={`sidebar-overlay ${isOpen ? "open" : ""}`} 
+        onClick={closeSidebar} 
+      />
+
       <div className={`sidebar-wrapper ${isOpen ? "open" : ""}`}>
         <div className="sidebar-content" ref={sidebarRef}>
 
-          {/* Close */}
+          {/* Close Button */}
           <div className="sidebar-header">
             <button className="sidebar-close-btn" onClick={closeSidebar}>
               <IoClose size={26} />
@@ -46,11 +64,12 @@ export default function Sidebar() {
           {/* Dashboard */}
           <div className="sidebar-section">
             <button
-              className="dashboard-btn"
+              className="dashboard-btn fluid-btn"
               onClick={() => {
                 navigate("/dashboard");
                 closeSidebar();
               }}
+              onMouseMove={handleMouseMove} // 🔥 Attach Handler
             >
               Dashboard Home
             </button>
@@ -59,15 +78,20 @@ export default function Sidebar() {
           {/* PROJECT HEAD SECTION */}
           <p className="sidebar-title">Project Head</p>
           <div className="sidebar-section">
-            <button className="create-btn" onClick={() => setModalOpen(true)}>
+            <button 
+              className="create-btn fluid-btn" 
+              onClick={() => setModalOpen(true)}
+              onMouseMove={handleMouseMove} // 🔥 Attach Handler
+            >
               + Create Project
             </button>
 
             {teams.map((team) => (
               <button
                 key={team._id}
-                className="sidebar-btn"
+                className="sidebar-btn fluid-btn"
                 onClick={() => openProjectDashboard(team._id)}
+                onMouseMove={handleMouseMove} // 🔥 Attach Handler
               >
                 {team.TeamName}
               </button>
@@ -78,11 +102,12 @@ export default function Sidebar() {
           <p className="sidebar-title">Subproject Head</p>
           <div className="sidebar-section">
             <button
-              className="sidebar-btn"
+              className="sidebar-btn fluid-btn"
               onClick={() => {
                 setSubteamModalOpen(true);
                 closeSidebar();
               }}
+              onMouseMove={handleMouseMove} // 🔥 Attach Handler
             >
               Your Subprojects
             </button>
@@ -92,11 +117,12 @@ export default function Sidebar() {
           <p className="sidebar-title">Member</p>
           <div className="sidebar-section">
             <button
-              className="sidebar-btn"
+              className="sidebar-btn fluid-btn"
               onClick={() => {
                 setMemberModalOpen(true);
                 closeSidebar();
               }}
+              onMouseMove={handleMouseMove} // 🔥 Attach Handler
             >
               Your Member Teams
             </button>
