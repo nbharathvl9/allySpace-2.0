@@ -2,7 +2,7 @@ import "../styles/createProject.css";
 import { IoClose } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import SubprojectMembersModal from "./SubprojectMembersModal";
+import SubprojectMembersModal from "./SubProjectMemeberModal.jsx";
 
 export default function YourSubprojectsModal({ isOpen, onClose }) {
   const [subteams, setSubteams] = useState([]);
@@ -10,6 +10,7 @@ export default function YourSubprojectsModal({ isOpen, onClose }) {
 
   useEffect(() => {
     if (isOpen) {
+      // Fetch subteams where the current user is the HEAD
       api.get("/subteam/head")
         .then(res => setSubteams(res.data.subteams))
         .catch(err => console.log(err));
@@ -50,6 +51,7 @@ export default function YourSubprojectsModal({ isOpen, onClose }) {
         </div>
       </div>
 
+      {/* Conditionally render the Members Modal on top */}
       {selectedSubteamId && (
         <SubprojectMembersModal
           subteamId={selectedSubteamId}

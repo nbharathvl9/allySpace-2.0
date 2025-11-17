@@ -18,6 +18,7 @@ export default function NotificationDropdown({ close }) {
     if (notif.type === "SUBTEAM_HEAD_INVITE") {
       await api.post("/subteam/accept-subteam-head", {
         inviteId: notif.inviteId,
+        notificationId: notif._id
       });
     }
 
@@ -34,6 +35,7 @@ export default function NotificationDropdown({ close }) {
     if (notif.type === "SUBTEAM_HEAD_INVITE") {
       await api.post("/subteam/reject-subteam-head", {
         inviteId: notif.inviteId,
+        notificationId: notif._id
       });
     }
 
