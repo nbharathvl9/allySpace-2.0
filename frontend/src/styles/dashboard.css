@@ -408,3 +408,41 @@
   margin-top: 10px;
   width: 100%;
 }
+.floating-chat-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  
+  /* Gradient to match your theme */
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* Glow and Border */
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  cursor: pointer;
+  z-index: 100; /* Ensure it's on top */
+  
+  /* Bouncy Transition */
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+}
+
+.floating-chat-btn:hover {
+  transform: scale(1.1) translateY(-5px);
+  box-shadow: 0 15px 35px rgba(59, 130, 246, 0.6);
+}
+
+.floating-chat-btn:active {
+  transform: scale(0.95);
+}
+
+.floating-chat-btn svg {
+  color: white;
+}
