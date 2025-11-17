@@ -4,6 +4,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/DashBoard";
 import ProjectDashboard from "./pages/ProjectDashboard";
 import Landing from "./pages/Landing";
+import ChatPage from "./pages/ChatPage"; // 🔥 Import
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/project/:id" element={<ProjectDashboard />} />
+      <Route path="/chat" element={<ChatPage />} /> 
     </Routes>
   );
 }
