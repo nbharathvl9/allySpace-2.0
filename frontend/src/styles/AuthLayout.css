@@ -1,10 +1,10 @@
 :root {
-  --primary: #3b82f6;          /* Base Blue */
-  --primary-light: #60a5fa;     /* Lighter Blue */
-  --primary-dark: #0a0f1f;      /* Deep Navy */
+  --primary: #3b82f6;          
+  --primary-light: #60a5fa;    
+  --primary-dark: #1e293b;     
 }
 
-/* Background: premium deep-blue lighting + vignette + grain */
+/* Background */
 .auth-container {
   min-height: 100vh;
   width: 100%;
@@ -13,7 +13,8 @@
   align-items: center;
   padding: 20px;
 
-   background: radial-gradient(circle at top left, #3a0ca3, #240046, #10002b);
+   /* 🔥 REMOVED PURPLE GRADIENT */
+   background: transparent; /* Inherits Deep Slate from body */
 
   position: relative;
 }
@@ -24,7 +25,7 @@
   position: absolute;
   inset: 0;
   background-image: url("https://uploads-ssl.webflow.com/5fda76232e3988a2f3e7f2a7/5fdc92b3816fbc2fcdfd0450_Noise%20Texture.png");
-  opacity: 0.09;
+  opacity: 0.07; /* Reduced opacity for subtlety */
   mix-blend-mode: overlay;
   pointer-events: none;
 }
@@ -32,18 +33,18 @@
 /* 🌟 IMPROVED GLASS: clearer, brighter, deeper */
 .auth-card {
   width: 100%;
-  max-width: 430px;
-  padding: 42px;
+  max-width: 400px;
+  padding: 40px;
 
-  border-radius: 18px;
+  border-radius: 24px; /* Smoother corners */
 
-  background: rgba(255, 255, 255, 0.10);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  /* Darker, more professional glass */
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
 
-  border: 1px solid rgba(255, 255, 255, 0.18);
-
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 
   animation: fadeIn 0.45s ease-out;
 }
@@ -58,10 +59,11 @@
     transform: translateY(0) scale(1);
   }
 }
+
 .google-btn {
   background: white;
-  color: black;
-  border-radius: 12px;
+  color: #0f172a;
+  border-radius: 10px;
   padding: 12px 18px;
   font-weight: 600;
   display: flex;
@@ -72,15 +74,14 @@
   border: none;
   transition: 0.2s ease;
   margin-top: 0px;
+  width: 100%;
 }
 
 .google-btn:hover {
-  background: #e6e6e6;
-  
+  background: #f1f5f9;
 }
 
 .google-icon {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
 }
-

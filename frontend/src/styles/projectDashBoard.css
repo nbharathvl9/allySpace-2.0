@@ -2,7 +2,9 @@
   height: 100vh;
   width: 100vw;
 
-  background: radial-gradient(circle at top left, #3a0ca3, #240046, #10002b);
+  /* 🔥 REMOVED BACKGROUND: It now uses the global body background */
+  background: transparent; 
+  
   color: #f8fafc;
   font-family: 'Inter', sans-serif;
 
@@ -19,11 +21,13 @@
   font-size: 36px;
   font-weight: 700;
   margin-bottom: 6px;
+  letter-spacing: -0.5px;
 }
 
 .pd-description {
   opacity: 0.75;
   margin-bottom: 32px;
+  max-width: 600px;
 }
 
 /* GRID */
@@ -33,18 +37,22 @@
   gap: 26px;
 }
 
-/* CARD */
+/* CARD: More professional glass */
 .subproject-card {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 18px;
-  padding: 22px;
-  backdrop-filter: blur(18px);
+  background: rgba(30, 41, 59, 0.4); /* Dark Slate Glass */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(12px);
   transition: 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .subproject-card:hover {
   transform: translateY(-3px);
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* HEADER */
@@ -55,74 +63,84 @@
 }
 
 .lead-badge {
-  background: rgba(255,255,255,0.18);
-  padding: 6px 10px;
-  border-radius: 10px;
+  background: rgba(96, 165, 250, 0.1);
+  color: #60a5fa;
+  padding: 4px 10px;
+  border-radius: 6px;
   font-size: 12px;
+  font-weight: 600;
 }
 
 /* DESCRIPTION */
 .sp-desc {
-  opacity: 0.8;
-  margin-bottom: 16px;
+  opacity: 0.7;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 /* STATS */
 .sp-stats {
   display: flex;
-  gap: 20px;
-  margin-bottom: 16px;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .sp-stats span {
-  background: rgba(255,255,255,0.15);
-  padding: 8px 12px;
-  font-size: 14px;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 8px;
+  color: #cbd5e1;
 }
 
 /* BUTTONS */
 .sp-actions {
   display: flex;
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .sp-btn {
   flex: 1;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  color: #f8fafc;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 500;
   transition: 0.2s;
 }
 
 .sp-btn:hover {
-  background: rgba(255,255,255,0.25);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
 /* DELETE BUTTON */
 .delete-btn {
   width: 100%;
   padding: 10px;
-  border-radius: 10px;
-  background: #ef4444;
-  color: white;
-  border: none;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
   cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
 }
 
 .delete-btn:hover {
-  background: #b91c1c;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
 }
 
 /* ADD SUBPROJECT */
 .add-subproject-card {
-  border: 2px dashed rgba(255,255,255,0.25);
-  border-radius: 18px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
 
   display: flex;
   flex-direction: column;
@@ -135,11 +153,12 @@
 }
 
 .add-subproject-card:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.03);
   border-color: #60a5fa;
 }
 
 .add-plus {
-  font-size: 40px;
+  font-size: 32px;
   color: #60a5fa;
+  margin-bottom: 8px;
 }

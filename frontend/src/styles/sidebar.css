@@ -3,11 +3,9 @@
 /* ========================================= */
 .sidebar-overlay {
   position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: stretch;
+  inset: 0; /* 🔥 Uses top/right/bottom/left: 0 instead of width: 100vw */
+  width: 100%;
+  height: 100%;
   
   background: rgba(0, 0, 0, 0);
   backdrop-filter: none;
@@ -72,109 +70,97 @@
 }
 
 /* ========================================= */
-/* 🫧 FLUID BUBBLE BUTTONS (Shared)          */
+/* 🫧 LIQUID MAGNETIC BUTTONS (Shared)       */
 /* ========================================= */
 .sidebar-btn,
 .dashboard-btn,
 .create-btn {
   width: 100%;
   padding: 14px 20px;
-  
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  
   font-size: 15px;
   font-weight: 600;
   text-align: left;
   color: rgba(255, 255, 255, 0.9);
-  
   cursor: pointer;
   position: relative;
   overflow: hidden;
   z-index: 1;
 
-  /* Bouncing Physics */
-  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), 
-              background 0.3s ease, 
-              border-color 0.3s ease,
-              box-shadow 0.3s ease;
+  /* Magnetic Transform */
+  transform: translate(var(--pull-x, 0), var(--pull-y, 0)) scale(var(--scale, 1));
+
+  transition: 
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+    background 0.3s ease, 
+    border-color 0.3s ease, 
+    box-shadow 0.3s ease;
 }
 
-/* 🫧 THE CURSOR SHINE (Updated Logic) */
+/* 🫧 SHINE */
 .sidebar-btn::before,
 .dashboard-btn::before,
 .create-btn::before {
   content: "";
   position: absolute;
-  
-  /* 🔥 The Magic: Position based on JS variables */
   top: var(--y, 50%);
   left: var(--x, 50%);
-  
   width: 0;
   height: 0;
-  
-  /* Spotlight Gradient */
-  background: radial-gradient(circle closest-side, rgba(255, 255, 255, 0.18), transparent);
-  
+  background: radial-gradient(circle closest-side, rgba(255, 255, 255, 0.25), transparent);
   border-radius: 50%;
-  
-  /* Center the gradient on the cursor coordinates */
   transform: translate(-50%, -50%);
-  
-  transition: width 0.4s ease, height 0.4s ease;
-  pointer-events: none; /* Let mouse pass through */
+  transition: width 0.5s ease-out, height 0.5s ease-out;
+  pointer-events: none;
   z-index: -1;
 }
 
-/* 🫧 HOVER STATE */
+/* 🫧 HOVER */
 .sidebar-btn:hover,
 .dashboard-btn:hover {
-  transform: scale(1.03);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.35);
   color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
 }
 
-/* Expand bubble on hover */
 .sidebar-btn:hover::before,
 .dashboard-btn:hover::before {
-  width: 400px;
-  height: 400px;
+  width: 300%;
+  height: 300%;
 }
 
-/* 🫧 ACTIVE STATE */
+/* 🫧 ACTIVE */
 .sidebar-btn:active,
 .dashboard-btn:active,
 .create-btn:active {
-  transform: scale(0.95);
-  transition: transform 0.1s;
+  transform: translate(var(--pull-x, 0), var(--pull-y, 0)) scale(0.95);
+  transition: transform 0.1s cubic-bezier(0, 0, 0.2, 1);
 }
 
 /* ========================================= */
-/* 🔵 BUTTON VARIANTS                        */
+/* 🔵 BUTTON SPECIFICS                       */
 /* ========================================= */
-
-/* Dashboard */
 .dashboard-btn {
   background: rgba(255, 255, 255, 0.03);
-  width: 220px;
-  margin-top: -54px;
+  margin-top: -55px;
+  width: 200px;
   text-align: center;
 }
 
-/* Sidebar List */
 .sidebar-btn {
   background: transparent;
   border-color: transparent;
   padding-left: 16px;
 }
+
 .sidebar-btn:hover {
-  padding-left: 20px; /* Slide text slightly */
   background: rgba(255, 255, 255, 0.04);
+  padding-left: 20px; 
+  transition: padding-left 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Create Project (Special) */
 .create-btn {
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(96, 165, 250, 0.8));
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -185,18 +171,15 @@
 
 .create-btn:hover {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
-  box-shadow: 0 15px 40px rgba(59, 130, 246, 0.6);
+  box-shadow: 0 20px 50px rgba(59, 130, 246, 0.5);
 }
 
 .create-btn:hover::before {
-  width: 500px; /* Bigger shine for main button */
-  height: 500px;
-  background: radial-gradient(circle closest-side, rgba(255, 255, 255, 0.4), transparent);
+  width: 400%;
+  height: 400%;
+  background: radial-gradient(circle closest-side, rgba(255, 255, 255, 0.5), transparent);
 }
 
-/* ========================================= */
-/* 🔵 CLOSE BUTTON                           */
-/* ========================================= */
 .sidebar-header {
   width: 100%;
   display: flex;
@@ -208,16 +191,13 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  
   display: flex;
   align-items: center;
   justify-content: center;
   color: rgba(255, 255, 255, 0.8);
-  
   cursor: pointer;
   transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
@@ -226,11 +206,6 @@
   background: rgba(255, 255, 255, 0.2);
   color: white;
   transform: rotate(90deg) scale(1.15);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-}
-
-.sidebar-close-btn:active {
-  transform: scale(0.85);
 }
 
 .sidebar-section {
