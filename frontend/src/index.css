@@ -21,6 +21,22 @@ body {
   width: 100%;
 }
 
+/* 🔥 GLOBAL SCROLLBAR STYLES */
+body::-webkit-scrollbar {
+  width: 12px;
+  background-color: #0f172a; /* Dark track background */
+}
+
+body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  border: 3px solid #0f172a; /* Creates a nice padding effect */
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 /* ---------------- NAVBAR ---------------- */
 .nav {
   display: flex;

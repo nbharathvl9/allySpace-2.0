@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom"; // 🔥 Import Portal
 import "../styles/notif.css";
 import api from "../api/axios";
-import FluidButton from "./FluidButton"; // 🔥 Import
+import FluidButton from "./FluidButton";
+import { FiInbox } from "react-icons/fi"; // Import an icon
 
 export default function NotificationDropdown({ close }) {
   const [notifs, setNotifs] = useState([]);
@@ -45,41 +47,48 @@ export default function NotificationDropdown({ close }) {
     await load();
   };
 
-  return (
+  // 🔥 Use createPortal to render the modal directly into document.body
+  return createPortal(
     <div className="notif-box">
       <h3 className="notif-title">Notifications</h3>
 
       {notifs.length === 0 && (
-        <p className="notif-empty">No new notifications</p>
+        <div className="notif-empty">
+          <FiInbox size={32} />
+          <p>No new notifications</p>
+          <span>You're all caught up!</span>
+        </div>
       )}
 
-      {notifs.map((n) => (
-        <div key={n._id} className="notif-item">
-          <p className="notif-msg">{n.message}</p>
+      <div className="notif-list">
+        {notifs.map((n) => (
+          <div key={n._id} className="notif-item">
+            <p className="notif-msg">{n.message}</p>
 
-          {n.status === "Pending" &&
-            (n.type === "SUBTEAM_HEAD_INVITE" ||
-              n.type === "SUBTEAM_MEMBER_INVITE") && (
-              <div className="notif-actions">
-                {/* 🔥 Fluid Buttons */}
-                <FluidButton
-                  className="btn-success"
-                  style={{ padding: "5px 12px", fontSize: "14px" }}
-                  onClick={() => accept(n)}
-                >
-                  ✓
-                </FluidButton>
-                <FluidButton
-                  className="btn-danger"
-                  style={{ padding: "5px 12px", fontSize: "14px" }}
-                  onClick={() => reject(n)}
-                >
-                  ✕
-                </FluidButton>
-              </div>
-            )}
-        </div>
-      ))}
-    </div>
+            {n.status === "Pending" &&
+              (n.type === "SUBTEAM_HEAD_INVITE" ||
+                n.type === "SUBTEAM_MEMBER_INVITE") && (
+                <div className="notif-actions">
+                  <FluidButton
+                    className="btn-success"
+                    style={{ padding: "6px 14px", fontSize: "13px" }}
+                    onClick={() => accept(n)}
+                  >
+                    Accept
+                  </FluidButton>
+                  <FluidButton
+                    className="btn-danger"
+                    style={{ padding: "6px 14px", fontSize: "13px" }}
+                    onClick={() => reject(n)}
+                  >
+                    Reject
+                  </FluidButton>
+                </div>
+              )}
+          </div>
+        ))}
+      </div>
+    </div>,
+    document.body // Target document.body
   );
 }

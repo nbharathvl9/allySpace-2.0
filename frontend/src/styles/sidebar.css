@@ -213,3 +213,29 @@
   flex-direction: column;
   gap: 12px;
 }
+/* ... existing code ... */
+.sidebar-wrapper.open {
+  transform: translateX(0);
+}
+
+/* 🔥 SIDEBAR SCROLLBAR STYLES */
+.sidebar-wrapper::-webkit-scrollbar {
+  width: 10px;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  margin: 8px 0;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
