@@ -5,8 +5,8 @@ import { useSidebar } from "../context/sideBarContext.jsx";
 import ProfileModal from "./ProfileModal.jsx";
 import NotificationDropdown from "./NotificationDropdown.jsx";
 import { useState, useEffect } from "react";
-import api from "../api/axios";
-import FluidButton from "./FluidButton";
+import api from "../api/axios.js";
+import FluidButton from "./FluidButton.jsx";
 
 export default function Navbar() {
   const { toggleSidebar } = useSidebar();
