@@ -4,11 +4,13 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/DashBoard";
 import ProjectDashboard from "./pages/ProjectDashboard";
 import Landing from "./pages/Landing";
-import ChatPage from "./pages/ChatPage"; // 🔥 Import
+import ChatPage from "./pages/ChatPage"; 
+import { ToastProvider } from "./context/ToastContext";// 🔥 Import
 
 export default function App() {
   return (
-    <Routes>
+    <ToastProvider>
+      <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
@@ -16,5 +18,7 @@ export default function App() {
       <Route path="/project/:id" element={<ProjectDashboard />} />
       <Route path="/chat" element={<ChatPage />} /> 
     </Routes>
+    </ToastProvider>
+  
   );
 }

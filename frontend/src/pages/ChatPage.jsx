@@ -4,7 +4,7 @@ import Sidebar from "../components/sidebar.jsx";
 import api from "../api/axios";
 import { io } from "socket.io-client";
 import EmojiPicker from "emoji-picker-react";
-import { FiSearch, FiMoreVertical, FiSend, FiPaperclip, FiSmile } from "react-icons/fi";
+import { FiSearch, FiSend, FiSmile } from "react-icons/fi";
 import { BsCheckAll, BsCheck } from "react-icons/bs";
 
 export default function ChatPage() {
@@ -18,18 +18,17 @@ export default function ChatPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showEmoji, setShowEmoji] = useState(false);
+
+  // 🔥 Sidebar State (Lifted)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   const messagesEndRef = useRef(null);
-  
-  // 🔥 REF TO TRACK ACTIVE CHAT INSIDE SOCKET LISTENERS
   const activeChatRef = useRef(null); 
 
-  // Update ref whenever state changes
   useEffect(() => {
     activeChatRef.current = activeChat;
   }, [activeChat]);
 
-  // 1. Initialize
   useEffect(() => {
     const setup = async () => {
       try {
@@ -37,34 +36,27 @@ export default function ChatPage() {
         const user = res.data.user;
         setCurrentUser(user);
 
-        // Connect Socket
         const newSocket = io("http://localhost:5000", {
           query: { userId: user._id },
         });
         setSocket(newSocket);
 
-        // Listeners
         newSocket.on("getOnlineUsers", (users) => setOnlineUsers(users));
 
-        // ⚡ HANDLE INCOMING MESSAGES
         newSocket.on("newMessage", (msg) => {
           const currentChatId = activeChatRef.current?._id;
           
-          // A. If chat is open with sender/receiver, append message
           if (currentChatId && (msg.sender === currentChatId || msg.recipient === currentChatId)) {
              setMessages((prev) => {
-                // Avoid duplicates
                 if (prev.some(m => m._id === msg._id)) return prev;
                 return [...prev, msg];
              });
              
-             // If I am the recipient and looking at it, mark read immediately
              if (msg.recipient === user._id && msg.sender === currentChatId) {
                 newSocket.emit("markMessagesAsRead", { senderId: currentChatId, recipientId: user._id });
              }
           }
 
-          // B. Update Sidebar (Move contact to top, update text)
           setContacts((prev) => {
              const otherId = msg.sender === user._id ? msg.recipient : msg.sender;
              const existingIndex = prev.findIndex(c => c._id === otherId);
@@ -78,20 +70,15 @@ export default function ChatPage() {
                   lastMsg: msg.text, 
                   time: msg.createdAt 
                 };
-                newContacts.splice(existingIndex, 1); // Remove
+                newContacts.splice(existingIndex, 1); 
              } else {
-                // If contact doesn't exist (new conversation), we might need to fetch user details
-                // For now, we handle existing contacts. 
-                // To fix "new user not appearing", you'd typically fetch the user info here.
                 return prev; 
              }
-             return [updatedContact, ...newContacts]; // Add to top
+             return [updatedContact, ...newContacts];
           });
         });
 
-        // ⚡ BLUE TICKS
         newSocket.on("messagesRead", ({ by }) => {
-             // Update 'isRead' for all messages sent to 'by'
              setMessages(prev => prev.map(msg => 
                  msg.recipient === by ? { ...msg, isRead: true } : msg
              ));
@@ -113,7 +100,6 @@ export default function ChatPage() {
     } catch(err) { console.error(err); }
   };
 
-  // Search Users
   useEffect(() => {
     if (!searchQuery) {
       setSearchResults([]);
@@ -128,7 +114,6 @@ export default function ChatPage() {
     return () => clearTimeout(delay);
   }, [searchQuery]);
 
-  // Load History & Mark Read
   useEffect(() => {
     if (activeChat && currentUser && socket) {
       api.get(`/chat/${activeChat._id}`).then((res) => {
@@ -136,7 +121,6 @@ export default function ChatPage() {
         scrollToBottom();
       });
 
-      // Mark as read when opening chat
       socket.emit("markMessagesAsRead", { 
           senderId: activeChat._id, 
           recipientId: currentUser._id 
@@ -168,8 +152,6 @@ export default function ChatPage() {
     setActiveChat(user);
     setSearchQuery(""); 
     setSearchResults([]);
-    
-    // If user not in contacts, add them temporarily
     if (!contacts.find(c => c._id === user._id)) {
         setContacts(prev => [{ ...user, lastMsg: "New Chat", time: new Date() }, ...prev]);
     }
@@ -183,9 +165,9 @@ export default function ChatPage() {
 
   return (
     <div className="chat-layout">
-      <Sidebar />
+      {/* 🔥 Pass props to Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
-      {/* LEFT SIDEBAR */}
       <div className="chat-sidebar-panel">
         <div className="chat-header">
           <h2 style={{ fontSize: "20px" }}>Messages</h2>
@@ -204,7 +186,6 @@ export default function ChatPage() {
         </div>
 
         <div className="contact-list">
-          {/* Search Results */}
           {searchQuery ? (
              searchResults.map(user => (
                 <div key={user._id} className="contact-card" onClick={() => selectUser(user)}>
@@ -218,7 +199,6 @@ export default function ChatPage() {
                 </div>
              ))
           ) : (
-             // Contact List
              contacts.map((contact) => (
                 <div 
                   key={contact._id} 
@@ -241,7 +221,6 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* RIGHT WINDOW */}
       <div className="chat-window">
         {activeChat ? (
           <>
