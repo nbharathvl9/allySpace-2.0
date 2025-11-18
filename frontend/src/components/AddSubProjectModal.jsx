@@ -1,17 +1,18 @@
 import { IoClose } from "react-icons/io5";
 import "../styles/createProject.css";
 import api from "../api/axios";
-import FluidButton from "./FluidButton"; // 🔥 Import
+import FluidButton from "./FluidButton";
+import { useToast } from "../context/ToastContext"; // 🔥 Import
 
 export default function AddSubprojectModal({ isOpen, onClose, teamId }) {
+  const { showToast } = useToast();
+
   const handleCreate = async () => {
     const title = document.getElementById("sub-title").value.trim();
     const desc = document.getElementById("sub-desc").value.trim();
     const lead = document.getElementById("sub-lead").value.trim();
 
-    if (!title || !lead) {
-      return alert("Title and Subproject head username are required");
-    }
+    if (!title || !lead) return showToast("Title and Subproject head username are required", "error");
 
     try {
       await api.post("/subteam/invite-subteam-head", {
@@ -20,11 +21,11 @@ export default function AddSubprojectModal({ isOpen, onClose, teamId }) {
         description: desc,
         headUserName: lead,
       });
-      alert("Subteam request sent!");
+      showToast("Subteam invite sent successfully!", "success");
       onClose();
       window.location.reload();
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to create subproject");
+      showToast(err.response?.data?.message || "Failed to create subproject", "error");
     }
   };
 
@@ -33,33 +34,21 @@ export default function AddSubprojectModal({ isOpen, onClose, teamId }) {
   return (
     <div className="modal-overlay">
       <div className="modal-card">
-        <button className="modal-close-btn" onClick={onClose}>
-          <IoClose size={26} />
-        </button>
-
+        <button className="modal-close-btn" onClick={onClose}><IoClose size={26} /></button>
         <h2 className="modal-title">Create Subproject</h2>
-
         <div className="modal-input-block">
           <label>Subproject Title</label>
           <input id="sub-title" placeholder="Enter subproject name" />
         </div>
-
         <div className="modal-input-block">
           <label>Description</label>
           <textarea id="sub-desc" placeholder="Enter description"></textarea>
         </div>
-
         <div className="modal-input-block">
           <label>Subproject Head Username</label>
           <input id="sub-lead" placeholder="Enter username" />
         </div>
-
-        {/* 🔥 Fluid Button */}
-        <FluidButton
-          className="btn-primary"
-          style={{ width: "100%", marginTop: "8px", padding: "14px" }}
-          onClick={handleCreate}
-        >
+        <FluidButton className="btn-primary" style={{ width: "100%", marginTop: "8px", padding: "14px" }} onClick={handleCreate}>
           Send Invite
         </FluidButton>
       </div>

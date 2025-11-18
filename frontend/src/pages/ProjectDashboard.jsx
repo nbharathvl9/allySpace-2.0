@@ -8,17 +8,25 @@ import AssignTaskModal from "../components/AssignTaskModal.jsx";
 import ManageMembersModal from "../components/ManageMembersModal.jsx";
 import ViewResponsesModal from "../components/ViewResponsesModal.jsx";
 import api from "../api/axios";
-import FluidButton from "../components/FluidButton"; // 🔥 Import
+import FluidButton from "../components/FluidButton"; 
+// 🔥 Import Toast Hook
+import { useToast } from "../context/ToastContext"; 
 
 export default function ProjectDashboard() {
   const { id } = useParams();
   const [project, setProject] = useState(null);
+
+  // 🔥 Sidebar State (Lifted)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [subModalOpen, setSubModalOpen] = useState(false);
   const [assignTaskOpen, setAssignTaskOpen] = useState(false);
   const [manageMembersOpen, setManageMembersOpen] = useState(false);
   const [viewResponsesOpen, setViewResponsesOpen] = useState(false);
   const [selectedSubteam, setSelectedSubteam] = useState(null);
+  
+  // 🔥 Destructure toast
+  const { showToast } = useToast(); 
 
   const loadProject = () => {
     api
@@ -32,12 +40,14 @@ export default function ProjectDashboard() {
   }, [id]);
 
   const handleDeleteSubteam = async (subteamId) => {
+    // ⚠️ Consider replacing confirm with a custom modal later
     if (!confirm("Are you sure you want to delete this subteam?")) return;
     try {
       await api.delete(`/subteam/${subteamId}`);
+      showToast("Subteam deleted successfully", "success");
       loadProject();
     } catch (err) {
-      alert("Failed to delete subteam");
+      showToast("Failed to delete subteam", "error");
     }
   };
 
@@ -51,8 +61,11 @@ export default function ProjectDashboard() {
 
   return (
     <div className="project-dashboard-wrapper">
-      <Sidebar />
-      <Navbar />
+      {/* 🔥 Pass props to Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+      
+      {/* 🔥 Pass toggle function to Navbar */}
+      <Navbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
       <div className="project-dashboard-content">
         <h1 className="pd-title">
@@ -76,7 +89,6 @@ export default function ProjectDashboard() {
                 <span>Tasks: {sp.tasks.length}</span>
               </div>
 
-              {/* 🔥 FLUID ACTION BUTTONS */}
               <div className="sp-actions">
                 <FluidButton
                   style={{ flex: 1, fontSize: "13px", padding: "10px" }}
