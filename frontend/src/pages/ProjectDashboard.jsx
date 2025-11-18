@@ -9,14 +9,12 @@ import ManageMembersModal from "../components/ManageMembersModal.jsx";
 import ViewResponsesModal from "../components/ViewResponsesModal.jsx";
 import api from "../api/axios";
 import FluidButton from "../components/FluidButton"; 
-// 🔥 Import Toast Hook
 import { useToast } from "../context/ToastContext"; 
 
 export default function ProjectDashboard() {
   const { id } = useParams();
   const [project, setProject] = useState(null);
 
-  // 🔥 Sidebar State (Lifted)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [subModalOpen, setSubModalOpen] = useState(false);
@@ -25,7 +23,6 @@ export default function ProjectDashboard() {
   const [viewResponsesOpen, setViewResponsesOpen] = useState(false);
   const [selectedSubteam, setSelectedSubteam] = useState(null);
   
-  // 🔥 Destructure toast
   const { showToast } = useToast(); 
 
   const loadProject = () => {
@@ -40,7 +37,6 @@ export default function ProjectDashboard() {
   }, [id]);
 
   const handleDeleteSubteam = async (subteamId) => {
-    // ⚠️ Consider replacing confirm with a custom modal later
     if (!confirm("Are you sure you want to delete this subteam?")) return;
     try {
       await api.delete(`/subteam/${subteamId}`);
@@ -61,10 +57,7 @@ export default function ProjectDashboard() {
 
   return (
     <div className="project-dashboard-wrapper">
-      {/* 🔥 Pass props to Sidebar */}
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-      
-      {/* 🔥 Pass toggle function to Navbar */}
       <Navbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
       <div className="project-dashboard-content">
@@ -139,7 +132,6 @@ export default function ProjectDashboard() {
         </div>
       </div>
 
-      {/* --- MODALS --- */}
       <AddSubprojectModal
         isOpen={subModalOpen}
         onClose={() => setSubModalOpen(false)}
@@ -148,12 +140,14 @@ export default function ProjectDashboard() {
 
       {selectedSubteam && (
         <>
+          {/* 🔥 FIXED: Passing correct props 'assignedTo' and 'assigneeName' */}
           <AssignTaskModal
             isOpen={assignTaskOpen}
             onClose={() => setAssignTaskOpen(false)}
             teamId={id}
             subteamId={selectedSubteam._id}
-            headId={selectedSubteam.headId?._id}
+            assignedTo={selectedSubteam.headId?._id} 
+            assigneeName={selectedSubteam.headId?.userName}
           />
 
           <ManageMembersModal
