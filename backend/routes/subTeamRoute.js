@@ -10,7 +10,7 @@ const Task = require("../models/task");
 const SubteamInvite = require("../models/SubTeamInvite.js");
 
 // ---------------------------------------------------------
-// 1. GET MEMBERS + TASKS (Updated to return teamId)
+// 1. GET MEMBERS + TASKS (Updated for HEAD & MEMBERS)
 // ---------------------------------------------------------
 router.get("/return-subteams/:id", async (req, res) => {
   try {
@@ -18,6 +18,7 @@ router.get("/return-subteams/:id", async (req, res) => {
 
     const subteam = await Subteam.findById(subteamId)
       .populate("members", "userName email")
+      .populate("headId", "userName email") // 🔥 Populate Head details
       .lean();
 
     if (!subteam) {
@@ -27,10 +28,10 @@ router.get("/return-subteams/:id", async (req, res) => {
     // Fetch all tasks for this subteam
     const tasks = await Task.find({ subteamId }).lean();
 
+    // 1. Map Member Tasks (Tasks assigned to members)
     const membersWithTaskInfo = subteam.members.map((member) => {
-      // 🔥 FIX: Force string comparison to ensure match
       const task = tasks.find(
-        (t) => String(t.assignedTo) === String(member._id)
+        (t) => t.assignedTo?.toString() === member._id.toString()
       );
 
       return {
@@ -48,10 +49,31 @@ router.get("/return-subteams/:id", async (req, res) => {
       };
     });
 
+    // 2. 🔥 Get Head Tasks (All tasks assigned to Subteam Head by Team Head)
+    let headTasks = [];
+    if (subteam.headId) {
+      const tasksForHead = tasks.filter(
+        (t) => t.assignedTo?.toString() === subteam.headId._id.toString()
+      );
+      
+      headTasks = tasksForHead.map(t => ({
+        _id: subteam.headId._id,
+        userName: subteam.headId.userName,
+        email: subteam.headId.email,
+        taskId: t._id,
+        assignedTask: t.title,
+        description: t.description,
+        status: t.status,
+        deadline: t.deadline,
+        responseMessage: t.responseMessage
+      }));
+    }
+
     res.json({
       subteamName: subteam.name,
       teamId: subteam.teamId,
       members: membersWithTaskInfo,
+      headTasks: headTasks // 🔥 Return Array of Head Tasks
     });
 
   } catch (err) {
@@ -551,57 +573,5 @@ router.post("/join/reject", protectRoute, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
-
-// ---------------------------------------------------------
-// 1. GET MEMBERS + TASKS (Updated with taskId)
-// ---------------------------------------------------------
-router.get("/return-subteams/:id", async (req, res) => {
-  try {
-    const subteamId = req.params.id;
-
-    const subteam = await Subteam.findById(subteamId)
-      .populate("members", "userName email")
-      .lean();
-
-    if (!subteam) {
-      return res.status(404).json({ message: "Subteam not found" });
-    }
-
-    const tasks = await Task.find({ subteamId }).lean();
-
-    const membersWithTaskInfo = subteam.members.map((member) => {
-      const task = tasks.find(
-        (t) => t.assignedTo?.toString() === member._id.toString()
-      );
-
-      return {
-        _id: member._id,
-        userName: member.userName,
-        email: member.email,
-
-        // 🔥 ADDED taskId
-        taskId: task ? task._id : null,
-        
-        assignedTask: task ? task.title : "No task assigned",
-        description: task ? task.description : "",
-        status: task ? task.status : "Pending",
-        deadline: task ? task.deadline : null,
-        responseMessage: task ? task.responseMessage : "" 
-      };
-    });
-
-    res.json({
-      subteamName: subteam.name,
-      teamId: subteam.teamId,
-      members: membersWithTaskInfo,
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
 
 module.exports = router;

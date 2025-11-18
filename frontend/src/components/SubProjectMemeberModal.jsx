@@ -1,12 +1,13 @@
 import "../styles/createProject.css";
 import "../styles/roundTable.css"; 
-import { IoClose, IoRefresh, IoAddCircle } from "react-icons/io5";
+import { IoClose, IoRefresh, IoAddCircle, IoList, IoDocumentText } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import FluidButton from "./FluidButton";
 import { useToast } from "../context/ToastContext";
+import HeadTaskListModal from "./HeadTaskListModal"; // 🔥 Import New Modal
+import ViewResponsesModal from "./ViewResponsesModal"; // 🔥 Import Response Viewer
 
-// 🔥 Date Picker Imports
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/CustomDatepicker.css"; 
@@ -21,11 +22,14 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
   
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
-  
-  // 🔥 Updated state for Date Object
   const [taskDeadline, setTaskDeadline] = useState(new Date());
-  
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // 🔥 New State for Head Tasks List
+  const [headTasks, setHeadTasks] = useState([]); 
+  const [isHeadTaskListOpen, setIsHeadTaskListOpen] = useState(false);
+  const [isMyResponsesOpen, setIsMyResponsesOpen] = useState(false); // To view own responses
+
   const { showToast } = useToast();
 
   const fetchMembers = () => {
@@ -34,6 +38,12 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
         setMembers(res.data.members);
         setSubteamName(res.data.subteamName);
         setTeamId(res.data.teamId);
+        
+        // 🔥 Store All Head Tasks
+        if (res.data.headTasks) {
+            setHeadTasks(res.data.headTasks);
+        }
+
         if (selectedMember) {
           const updated = res.data.members.find(m => m._id === selectedMember._id);
           if (updated) setSelectedMember(updated);
@@ -74,7 +84,7 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
       showToast("Task assigned successfully!", "success");
       setTaskTitle("");
       setTaskDesc("");
-      setTaskDeadline(new Date()); // Reset
+      setTaskDeadline(new Date()); 
       fetchMembers(); 
     } catch (err) {
       showToast(err.response?.data?.message || "Failed to assign task", "error");
@@ -109,6 +119,36 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
               <h2 className="modal-title" style={{ margin: 0, fontSize: "24px" }}>{subteamName}</h2>
               <p style={{ color: "#64748b", fontSize: "13px", marginTop: "4px" }}>Command Center • {members.length} Agents</p>
             </div>
+
+            {/* 🔥 NEW BUTTONS: VIEW TASKS & VIEW RESPONSES */}
+            <div style={{ position: "absolute", top: "25px", right: "20px", zIndex: 40, display: "flex", gap: "10px" }}>
+               <FluidButton 
+                  onClick={() => setIsHeadTaskListOpen(true)}
+                  style={{ 
+                     background: "rgba(234, 179, 8, 0.15)", 
+                     border: "1px solid rgba(234, 179, 8, 0.4)", 
+                     color: "#fde047",
+                     fontSize: "12px",
+                     padding: "8px 16px"
+                  }}
+               >
+                 <IoList style={{marginRight: "6px"}} /> HQ Directives
+               </FluidButton>
+               
+               <FluidButton 
+                  onClick={() => setIsMyResponsesOpen(true)}
+                  style={{ 
+                     background: "rgba(59, 130, 246, 0.15)", 
+                     border: "1px solid rgba(59, 130, 246, 0.4)", 
+                     color: "#93c5fd",
+                     fontSize: "12px",
+                     padding: "8px 16px"
+                  }}
+               >
+                 <IoDocumentText style={{marginRight: "6px"}} /> My Reports
+               </FluidButton>
+            </div>
+
             <div style={{ position: "absolute", bottom: "25px", left: "30px", zIndex: 10, display: "flex", gap: "8px" }}>
               <input style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.15)", background: "rgba(0,0,0,0.4)", color: "white", outline: "none", fontSize: "12px", width: "140px" }} placeholder="Add username..." value={newMemberName} onChange={(e) => setNewMemberName(e.target.value)} />
               <FluidButton className="btn-primary" style={{ padding: "6px 12px", fontSize: "11px" }} onClick={handleAddMember}>+ Invite</FluidButton>
@@ -174,7 +214,6 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
                   <input value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} placeholder="E.g. Fix Navbar Layout" style={{ width: "100%", padding: "14px", borderRadius: "12px", background: "rgba(255,255,255,0.05)", color: "white", border: "1px solid rgba(255,255,255,0.1)", outline: "none" }} />
                 </div>
 
-                {/* 🔥 MODERN DATE PICKER */}
                 <div className="modal-input-block">
                   <label style={{ color: "#94a3b8", fontSize: "13px" }}>Deadline</label>
                   <DatePicker 
@@ -205,6 +244,21 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
           </div>
         </div>
       </div>
+      
+      {/* 🔥 HEAD TASK LIST MODAL (View & Respond to HQ) */}
+      <HeadTaskListModal 
+        isOpen={isHeadTaskListOpen}
+        onClose={() => setIsHeadTaskListOpen(false)}
+        tasks={headTasks}
+        refreshData={fetchMembers}
+      />
+
+      {/* 🔥 VIEW ALL RESPONSES (For Subteam Head to see sent history) */}
+      <ViewResponsesModal 
+         isOpen={isMyResponsesOpen}
+         onClose={() => setIsMyResponsesOpen(false)}
+         subteamId={subteamId}
+      />
     </div>
   );
 }
