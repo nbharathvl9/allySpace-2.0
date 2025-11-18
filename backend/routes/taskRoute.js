@@ -8,6 +8,7 @@ const User = require("../models/User");
 const Notification = require("../models/notification");
 const Task = require("../models/task");
 
+// CREATE TASK
 router.post("/create", protectRoute, async (req, res) => {
   try {
     const { title, description, assignedTo, teamId, subteamId, deadline } = req.body;
@@ -18,27 +19,33 @@ router.post("/create", protectRoute, async (req, res) => {
     if (!team || !subteam)
       return res.status(404).json({ message: "Team or Subteam not found" });
 
+    // Check Roles
     const isTeamHead = team.TeamHId.toString() === req.user._id.toString();
     const isSubteamHead = subteam.headId?.toString() === req.user._id.toString();
-    const isMember = subteam.members.includes(req.user._id);  
+    const isMember = subteam.members.some(m => m.toString() === req.user._id.toString());  
 
-    // RULE 1: Team Head → Subteam Head ONLY
+    // 🔥 FIXED LOGIC: Use if-else to prioritize Head roles
     if (isTeamHead) {
+      // Rule: Team Head -> Subteam Head
       if (assignedTo.toString() !== subteam.headId.toString()) {
         return res.status(403).json({ message: "Team Head can only assign tasks to Subteam Head" });
       }
-    }
-
-    // RULE 2: Subteam Head → Members ONLY
-    if (isSubteamHead) {
-      if (!subteam.members.includes(assignedTo)) {
+    } 
+    else if (isSubteamHead) {
+      // Rule: Subteam Head -> Members
+      // Ensure we compare strings for the includes check
+      const isAssigneeMember = subteam.members.some(m => m.toString() === assignedTo.toString());
+      
+      if (!isAssigneeMember) {
         return res.status(403).json({ message: "Subteam Head can only assign tasks to Subteam Members" });
       }
-    }
-
-    // RULE 3: Members CANNOT assign tasks
-    if (isMember) {
+    } 
+    else if (isMember) {
+      // Rule: Members cannot assign
       return res.status(403).json({ message: "Members cannot assign tasks" });
+    } 
+    else {
+      return res.status(403).json({ message: "Not authorized to assign tasks in this subteam" });
     }
 
     // CREATE TASK OBJECT
@@ -52,15 +59,13 @@ router.post("/create", protectRoute, async (req, res) => {
       deadline
     });
 
-    // STORE TASK BASED ON ROLE
+    // STORE TASK REFERENCE
     if (isTeamHead) {
-      // Save task under TEAM
       team.tasks.push(task._id);
       await team.save();
     }
 
     if (isSubteamHead) {
-      // Save task under SUBTEAM
       subteam.tasks.push(task._id);
       await subteam.save();
     }

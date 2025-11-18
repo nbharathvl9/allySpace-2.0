@@ -253,3 +253,211 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(59,130,246,0.4);
 }
+/* 🔥 WIDER SCROLLABLE MODAL (Shared) */
+.modal-card-scrollable {
+  width: 90vw;
+  max-width: 900px; 
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(24px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 32px;
+  position: relative;
+  color: white;
+  animation: scaleIn 0.25s ease;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.5);
+
+  /* 🔥 ENABLE SCROLLING */
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll from tooltips */
+}
+
+/* Scrollbar Styling */
+.modal-card-scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+.modal-card-scrollable::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+.modal-card-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+.modal-card-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* 🔥 GRID CONTAINER FOR TEAMS */
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive columns */
+  gap: 20px;
+  margin-top: 20px;
+  overflow-y: auto; /* Scroll vertically */
+  padding-right: 8px; /* Space for scrollbar */
+  
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.teams-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.teams-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.teams-grid::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+}
+
+/* 🔥 TEAM CARD STYLE */
+.team-card-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.team-card-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #60a5fa;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.team-card-item h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.team-card-item p {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.team-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+  width: fit-content;
+  margin-top: auto; /* Push to bottom */
+}
+
+/* 🔥 WIDER SCROLLABLE MODAL (Shared) */
+.modal-card-scrollable {
+  width: 90vw;
+  max-width: 900px; /* Wide enough for grid */
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(24px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 32px;
+  position: relative;
+  color: white;
+  animation: scaleIn 0.25s ease;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* 🔥 RESPONSIVE GRID CONTAINER */
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+  overflow-y: auto;
+  padding-right: 8px; /* Space for scrollbar */
+  
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.teams-grid::-webkit-scrollbar { width: 6px; }
+.teams-grid::-webkit-scrollbar-track { background: transparent; }
+.teams-grid::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+}
+
+/* 🔥 UNIFIED CARD STYLE */
+.team-card-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  min-height: 140px;
+}
+
+.team-card-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(96, 165, 250, 0.4); /* Blue border on hover */
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+}
+
+.team-card-item h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: #f8fafc;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team-card-item p {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.5;
+  flex-grow: 1;
+}
+
+/* Tag at bottom of card */
+.team-tag {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(96, 165, 250, 0.1);
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+}
