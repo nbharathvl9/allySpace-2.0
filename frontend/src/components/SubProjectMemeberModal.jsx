@@ -4,7 +4,12 @@ import { IoClose, IoRefresh, IoAddCircle } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import FluidButton from "./FluidButton";
-import { useToast } from "../context/ToastContext"; // 🔥 Import
+import { useToast } from "../context/ToastContext";
+
+// 🔥 Date Picker Imports
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "../styles/CustomDatepicker.css"; 
 
 export default function SubprojectMembersModal({ subteamId, onClose }) {
   const [members, setMembers] = useState([]);
@@ -13,11 +18,14 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
   const [newMemberName, setNewMemberName] = useState("");
   const [hoveredMember, setHoveredMember] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
+  
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
-  const [taskDeadline, setTaskDeadline] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   
+  // 🔥 Updated state for Date Object
+  const [taskDeadline, setTaskDeadline] = useState(new Date());
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { showToast } = useToast();
 
   const fetchMembers = () => {
@@ -66,7 +74,7 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
       showToast("Task assigned successfully!", "success");
       setTaskTitle("");
       setTaskDesc("");
-      setTaskDeadline("");
+      setTaskDeadline(new Date()); // Reset
       fetchMembers(); 
     } catch (err) {
       showToast(err.response?.data?.message || "Failed to assign task", "error");
@@ -79,7 +87,7 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
     setSelectedMember(member);
     setTaskTitle(""); 
     setTaskDesc("");
-    setTaskDeadline("");
+    setTaskDeadline(new Date());
   };
 
   const formatDate = (dateString) => {
@@ -94,6 +102,8 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
           <IoClose size={26} />
         </button>
         <div style={{ display: "flex", height: "100%", minHeight: "600px" }}>
+          
+          {/* LEFT: ROUND TABLE */}
           <div style={{ flex: 2, position: "relative", borderRight: "1px solid rgba(255,255,255,0.08)" }}>
             <div style={{ position: "absolute", top: "25px", left: "30px", zIndex: 10 }}>
               <h2 className="modal-title" style={{ margin: 0, fontSize: "24px" }}>{subteamName}</h2>
@@ -129,11 +139,9 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
                 </div>
                 {members.map((m, index) => {
                   const total = members.length;
-                  const radius = 200;
-                  const angle = (360 / total) * index - 90; 
+                  const radius = 200; const angle = (360 / total) * index - 90; 
                   const radian = (angle * Math.PI) / 180;
-                  const x = radius * Math.cos(radian);
-                  const y = radius * Math.sin(radian);
+                  const x = radius * Math.cos(radian); const y = radius * Math.sin(radian);
                   const isSelected = selectedMember && selectedMember._id === m._id;
                   return (
                     <div key={m._id} className="table-seat" style={{ transform: `translate(${x}px, ${y}px)`, zIndex: isSelected ? 30 : 10 }} onMouseEnter={() => setHoveredMember(m)} onMouseLeave={() => setHoveredMember(null)} onClick={() => handleSeatClick(m)}>
@@ -145,6 +153,8 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
               </div>
             </div>
           </div>
+
+          {/* RIGHT: ASSIGNMENT FORM */}
           <div style={{ flex: 1, background: "rgba(0,0,0,0.2)", padding: "30px", display: "flex", flexDirection: "column" }}>
             <div style={{ marginBottom: "25px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <h3 style={{ color: "#f8fafc", fontSize: "18px", fontWeight: "600", margin: 0 }}>Task Assignment</h3>
@@ -158,16 +168,25 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
                     <div style={{ color: "#fff", fontWeight: "600", fontSize: "14px" }}>@{selectedMember.userName}</div>
                     <div style={{ color: "#94a3b8", fontSize: "11px" }}>{selectedMember.email}</div>
                   </div>
-                  {selectedMember.responseMessage && <div style={{ marginLeft: "auto", fontSize: "18px", cursor: "help" }} title={`Last Msg: ${selectedMember.responseMessage}`}>📩</div>}
                 </div>
                 <div className="modal-input-block">
                   <label style={{ color: "#94a3b8", fontSize: "13px" }}>Objective Title</label>
                   <input value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} placeholder="E.g. Fix Navbar Layout" style={{ width: "100%", padding: "14px", borderRadius: "12px", background: "rgba(255,255,255,0.05)", color: "white", border: "1px solid rgba(255,255,255,0.1)", outline: "none" }} />
                 </div>
+
+                {/* 🔥 MODERN DATE PICKER */}
                 <div className="modal-input-block">
                   <label style={{ color: "#94a3b8", fontSize: "13px" }}>Deadline</label>
-                  <input type="date" value={taskDeadline} onChange={(e) => setTaskDeadline(e.target.value)} style={{ width: "100%", padding: "14px", borderRadius: "12px", background: "rgba(255,255,255,0.05)", color: "white", border: "1px solid rgba(255,255,255,0.1)", outline: "none" }} />
+                  <DatePicker 
+                    selected={taskDeadline} 
+                    onChange={(date) => setTaskDeadline(date)} 
+                    dateFormat="MMM d, yyyy"
+                    className="custom-datepicker-input"
+                    minDate={new Date()}
+                    showPopperArrow={false}
+                  />
                 </div>
+
                 <div className="modal-input-block" style={{ flexGrow: 1 }}>
                   <label style={{ color: "#94a3b8", fontSize: "13px" }}>Mission Brief</label>
                   <textarea placeholder="Describe the task details..." value={taskDesc} onChange={(e) => setTaskDesc(e.target.value)} style={{ width: "100%", height: "100%", minHeight: "100px", padding: "16px", borderRadius: "12px", background: "rgba(255,255,255,0.05)", color: "white", border: "1px solid rgba(255,255,255,0.1)", outline: "none", resize: "none", fontFamily: "Inter, sans-serif", fontSize: "14px" }}></textarea>
