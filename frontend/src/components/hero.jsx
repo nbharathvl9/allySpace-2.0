@@ -1,6 +1,5 @@
 import React from "react";
 import "../index.css";
-import FluidButton from "./FluidButton"; // 🔥 Import
 
 const Hero = () => {
   return (
@@ -25,9 +24,7 @@ const Hero = () => {
         </p>
 
         {/* 🔥 Fluid Button */}
-        <FluidButton style={{ padding: "14px 28px" }}>
-          ▶ Watch The Video
-        </FluidButton>
+       
       </div>
     </section>
   );

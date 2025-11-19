@@ -36,7 +36,7 @@ export default function AssignTaskModal({ isOpen, onClose, teamId, subteamId, as
       await api.post("/task/create", {
         title,
         description: desc,
-        deadline, // Axios will automatically convert Date object to ISO string
+        deadline, // Axios will automatically convert Date object (including time) to ISO string
         teamId,
         subteamId,
         assignedTo, 
@@ -88,18 +88,21 @@ export default function AssignTaskModal({ isOpen, onClose, teamId, subteamId, as
           />
         </div>
 
-        {/* 🔥 MODERN DATE PICKER */}
+        {/* 🔥 UPDATED: Added Time Selection */}
         <div className="modal-input-block">
           <label>Deadline</label>
           <DatePicker 
             selected={deadline} 
             onChange={(date) => setDeadline(date)} 
-            dateFormat="MMM d, yyyy"
+            dateFormat="MMM d, yyyy h:mm aa" // Include time format
             className="custom-datepicker-input"
             disabled={!assignedTo}
             minDate={new Date()} // Prevent past dates
             placeholderText="Select a deadline"
             showPopperArrow={false}
+            showTimeSelect // Enable time selection
+            timeFormat="HH:mm"
+            timeIntervals={15}
           />
         </div>
 

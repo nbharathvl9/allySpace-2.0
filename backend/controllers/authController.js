@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const OTP = require("../models/Otp");
-const sendEmail = require("../utils/sendEmail");
+const { sendEmail } = require("../utils/sendEmail"); // 🔥 UPDATED: Destructure sendEmail
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
@@ -49,21 +49,32 @@ exports.sendOtp = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    await sendEmail(email, otp); // make sure sendEmail handles errors
+    // 🔥 UPDATED sendEmail call
+    const emailSubject = "AllySpace Signup Verification Code";
+    const emailHtml = `
+      <h3>Welcome to AllySpace!</h3>
+      <p>Your one-time verification code is: <b style="font-size: 20px; color: #3b82f6;">${otp}</b></p>
+      <p>This code expires in 5 minutes.</p>
+    `;
+    await sendEmail(email, emailSubject, emailHtml); 
+    
     res.status(200).json({ message: "OTP sent to email" });
   } catch (err) {
     console.error("sendOtp:", err);
     res.status(500).json({ message: "Failed to send OTP" });
   }
 };
-
+const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s]).{6,}$/;
+const PASSWORD_ERROR_MSG = "Password must be at least 6 characters long and contain at least one uppercase letter, one number, and one special character.";
 // ----------------- 2. SIGNUP (Verify OTP & Register) -----------------
 exports.signup = async (req, res) => {
   try {
     const { userName, email, password, otp } = req.body;
     if (!userName || !email || !password || !otp)
       return res.status(400).json({ message: "All fields are required" });
-
+    if (!PASSWORD_REGEX.test(password)) {
+      return res.status(400).json({ message: PASSWORD_ERROR_MSG });
+    }
     // Verify OTP with expiry
     const validOtp = await OTP.findOne({ email, otp });
     if (!isOtpValid(validOtp)) {
@@ -150,7 +161,15 @@ exports.sendForgotOtp = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    await sendEmail(email, otp);
+    // 🔥 UPDATED sendEmail call
+    const emailSubject = "AllySpace Password Reset OTP";
+    const emailHtml = `
+      <h3>Password Reset Request</h3>
+      <p>Your one-time password reset code is: <b style="font-size: 20px; color: #f59e0b;">${otp}</b></p>
+      <p>This code expires in 5 minutes.</p>
+    `;
+    await sendEmail(email, emailSubject, emailHtml);
+    
     res.json({ message: "OTP sent to email" });
   } catch (err) {
     console.error("sendForgotOtp:", err);
@@ -163,7 +182,9 @@ exports.resetPasswordWithOtp = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
     if (!email || !otp || !newPassword) return res.status(400).json({ message: "All fields are required" });
-
+    if (!PASSWORD_REGEX.test(newPassword)) {
+      return res.status(400).json({ message: PASSWORD_ERROR_MSG });
+    }
     const validOtp = await OTP.findOne({ email, otp });
     if (!isOtpValid(validOtp)) {
       return res.status(400).json({ message: "Invalid or expired OTP" });
@@ -201,7 +222,15 @@ exports.forgotPassword = async (req, res) => {
 
     // Prefer sending a proper email in production; console for dev
     try {
-      await sendEmail(email, `Reset link: ${resetUrl}`);
+      // 🔥 UPDATED sendEmail call
+      const emailSubject = "AllySpace Password Reset Link";
+      const emailHtml = `
+        <h3>Password Reset Request (Link)</h3>
+        <p>Please click the link below to reset your password. It expires in 1 hour.</p>
+        <p><a href="${resetUrl}" style="color: #60a5fa; text-decoration: none;">Reset Password Now</a></p>
+        <p>If you did not request a password reset, please ignore this email.</p>
+      `;
+      await sendEmail(email, emailSubject, emailHtml);
     } catch (mailErr) {
       console.warn("Failed to send reset email:", mailErr);
       console.log("RESET LINK:", resetUrl);
@@ -219,7 +248,9 @@ exports.resetPassword = async (req, res) => {
   try {
     const { token, newPassword } = req.body;
     if (!token || !newPassword) return res.status(400).json({ message: "Token and new password required" });
-
+    if (!PASSWORD_REGEX.test(newPassword)) {
+      return res.status(400).json({ message: PASSWORD_ERROR_MSG });
+    }
     const user = await User.findOne({
       resetPasswordToken: token,
       resetPasswordExpires: { $gt: Date.now() },

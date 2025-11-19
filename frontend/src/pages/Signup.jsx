@@ -7,6 +7,11 @@ import { FiMail, FiLock, FiUser, FiKey } from "react-icons/fi";
 import { useToast } from "../context/ToastContext"; // 🔥 Import
 import { useNavigate } from "react-router-dom";
 
+const isPasswordValid = (password) => {
+  // Regex: min 6 chars, 1 uppercase, 1 number, 1 special character (non-alphanumeric/non-space)
+  const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s]).{6,}$/;
+  return regex.test(password);
+}
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false); 
@@ -19,7 +24,9 @@ export default function Signup() {
   const handleSendOtp = async (e) => {
     e.preventDefault();
     if(!form.userName || !form.email || !form.password) return showToast("Please fill all fields", "error");
-
+    if (!isPasswordValid(form.password)) {
+        return showToast("Password must be at least 6 characters, include an uppercase letter, a number, and a special character.", "error");
+    }
     setLoading(true);
     try {
       await api.post("/auth/send-otp", { email: form.email, userName: form.userName });

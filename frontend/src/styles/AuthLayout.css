@@ -1,9 +1,12 @@
 :root {
-  --primary: #3b82f6;          
-  --primary-light: #60a5fa;    
-  --primary-dark: #1e293b;     
+  --primary: #3b82f6;
+  --primary-light: #60a5fa;
+  --primary-dark: #1e293b;
 }
 
+/* ------------------------------------------------------
+   MAIN CONTAINER
+------------------------------------------------------- */
 .auth-container {
   min-height: 100vh;
   width: 100%;
@@ -14,12 +17,12 @@
   background: transparent;
   position: relative;
   overflow: hidden;
-  
-  /* 🔥 Enable 3D perspective for child */
+
+  /* 3D effect container */
   perspective: 1000px;
 }
 
-/* 1. Noise overlay */
+/* Noise overlay */
 .auth-container::before {
   content: "";
   position: absolute;
@@ -31,12 +34,12 @@
   z-index: 3;
 }
 
-/* 2. "Color Splash" Aurora Background */
+/* Aurora Color Background */
 .auth-container::after {
   content: "";
   position: absolute;
   inset: -100px;
-  background: 
+  background:
     radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.5), transparent 30%),
     radial-gradient(circle at 90% 30%, rgba(124, 58, 237, 0.5), transparent 35%),
     radial-gradient(circle at 80% 90%, rgba(20, 184, 166, 0.5), transparent 30%);
@@ -50,36 +53,35 @@
   to { transform: rotate(360deg); }
 }
 
-
-/* 🔥 3. 3D TILT CARD */
+/* ------------------------------------------------------
+   3D TILT CARD
+------------------------------------------------------- */
 .auth-card {
   width: 100%;
   max-width: 420px;
   position: relative;
   z-index: 2;
-  
-  /* Get CSS variables from JS */
+
   --rotate-x: 0deg;
   --rotate-y: 0deg;
   --bg-x: 50%;
   --bg-y: 50%;
-  
-  /* Apply 3D transform */
+
   transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
-  
-  /* Transition for snapping back */
-  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1); 
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
   transform-style: preserve-3d;
   will-change: transform;
 }
 
-/* 🔥 Card Content (front layer) */
+/* ------------------------------------------------------
+   CARD CONTENT (front layer)
+------------------------------------------------------- */
 .auth-card-content {
   width: 100%;
   padding: 40px;
   border-radius: 24px;
-  
-  background: rgba(15, 23, 42, 0.8); 
+
+  background: rgba(15, 23, 42, 0.8);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
 
@@ -88,28 +90,66 @@
 
   position: relative;
   z-index: 2;
-  
-  /* Moves the content "forward" in 3D space */
-  transform: translateZ(20px); 
+
+  /* Moves forward in 3D */
+  transform: translateZ(20px);
 }
 
-/* 🔥 Card Shine (back layer) */
+/* ------------------------------------------------------
+   SHINE LAYER (behind content)
+------------------------------------------------------- */
 .auth-card-shine {
   position: absolute;
   inset: 0;
   border-radius: 24px;
   z-index: 1;
 
-  /* Gradient follows mouse via CSS variables */
   background: radial-gradient(
-    circle at var(--bg-x) var(--bg-y), 
-    rgba(255, 255, 255, 0.12), 
+    circle at var(--bg-x) var(--bg-y),
+    rgba(255, 255, 255, 0.12),
     transparent 40%
   );
-  
-  /* Sits just behind the content */
-  transform: translateZ(5px); 
+
+  transform: translateZ(5px);
   transition: background 0.1s linear;
 }
 
-/* Removed .google-btn styles */
+/* ------------------------------------------------------
+   MOBILE FIXES
+------------------------------------------------------- */
+@media (max-width: 600px) {
+  .auth-container {
+    padding: 0;
+    perspective: none;
+  }
+
+  .auth-card {
+    max-width: 100%;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .auth-card-content {
+    padding: 30px 20px;
+    border-radius: 0;
+    background: rgba(15, 23, 42, 1);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+    transform: none !important;
+  }
+
+  .auth-card-shine {
+    display: none;
+  }
+
+  .auth-title {
+    font-size: 24px;
+  }
+
+  .auth-subtitle {
+    font-size: 15px;
+    margin-bottom: 25px;
+  }
+}
