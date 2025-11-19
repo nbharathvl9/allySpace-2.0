@@ -7,6 +7,11 @@ import { FiMail, FiLock, FiUser, FiKey } from "react-icons/fi";
 import { useToast } from "../context/ToastContext"; // 🔥 Import Toast
 import { useNavigate } from "react-router-dom";
 
+const isPasswordValid = (password) => {
+  // Regex: min 6 chars, 1 uppercase, 1 number, 1 special character (non-alphanumeric/non-space)
+  const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s]).{6,}$/;
+  return regex.test(password);
+}
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [view, setView] = useState("login"); 
@@ -55,6 +60,9 @@ export default function Login() {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     if (!otp || !newPassword) return showToast("Please fill all fields", "error");
+    if (!isPasswordValid(newPassword)) {
+        return showToast("New password must be at least 6 characters, include an uppercase letter, a number, and a special character.", "error");
+    }
     setLoading(true);
     try {
       await api.post("/auth/forgot-password/reset", { 

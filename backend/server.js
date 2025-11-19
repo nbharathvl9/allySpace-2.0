@@ -5,6 +5,8 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const http = require("http"); 
 const { Server } = require("socket.io");
+const cron = require('node-cron'); // 🔥 ADDED: For scheduling reminders
+const { sendTaskReminder } = require('./utils/sendEmail'); // 🔥 ADDED: Import the reminder utility
 
 const authRoute = require("./routes/authRoute.js");
 const UserRoute = require("./routes/userRoute.js");
@@ -14,6 +16,8 @@ const taskRoute = require("./routes/taskRoute.js");
 const chatRoute = require("./routes/chatRoute.js"); 
 const notificationRoute = require("./routes/notifcationRoute.js");
 const Message = require("./models/Message");
+const Task = require('./models/task'); // 🔥 ADDED: Import Task model
+const User = require('./models/User'); // 🔥 ADDED: Import User model
 
 const app = express();
 const server = http.createServer(app); 
@@ -92,6 +96,38 @@ io.on("connection", (socket) => {
     }
   });
 });
+
+// ---------------------------------------------------------
+// 🔥 CRON JOB FOR TASK REMINDERS (Runs every hour)
+// ---------------------------------------------------------
+cron.schedule('0 * * * *', async () => { // Runs at the start of every hour (e.g., 00:00, 01:00)
+  console.log('Running task reminder check...');
+  try {
+    const now = new Date();
+    // Calculate the exact window: 6 hours from now to 7 hours from now
+    const sixHoursFromNow = new Date(now.getTime() + 6 * 60 * 60 * 1000); 
+    const sevenHoursFromNow = new Date(now.getTime() + 7 * 60 * 60 * 1000); 
+
+    // Find tasks that are Pending/In Progress and due within the 6th hour from now
+    const tasksToRemind = await Task.find({
+      status: { $in: ["Pending", "In Progress"] },
+      deadline: { 
+        $gt: sixHoursFromNow, // After 6 hours from current time
+        $lte: sevenHoursFromNow // Before or at 7 hours from current time
+      }
+    }).populate('assignedTo', 'email userName');
+
+    for (const task of tasksToRemind) {
+      if (task.assignedTo && task.assignedTo.email) {
+        console.log(`Sending reminder for task: ${task.title} to ${task.assignedTo.userName}`);
+        await sendTaskReminder(task.assignedTo.email, task.title, task.deadline);
+      }
+    }
+  } catch (error) {
+    console.error('Error in task reminder cron job:', error);
+  }
+});
+// ---------------------------------------------------------
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {

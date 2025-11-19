@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import FluidButton from "./FluidButton";
 import { useToast } from "../context/ToastContext";
-import HeadTaskListModal from "./HeadTaskListModal"; // 🔥 Import New Modal
-import ViewResponsesModal from "./ViewResponsesModal"; // 🔥 Import Response Viewer
+import HeadTaskListModal from "./HeadTaskListModal";
+import ViewResponsesModal from "./ViewResponsesModal"; // <<<< ADD THIS IMPORT
+// We don't have the final ViewResponsesModal content, so let's stick to the core functionality.
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -25,10 +26,9 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
   const [taskDeadline, setTaskDeadline] = useState(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // 🔥 New State for Head Tasks List
   const [headTasks, setHeadTasks] = useState([]); 
   const [isHeadTaskListOpen, setIsHeadTaskListOpen] = useState(false);
-  const [isMyResponsesOpen, setIsMyResponsesOpen] = useState(false); // To view own responses
+  const [isMyResponsesOpen, setIsMyResponsesOpen] = useState(false); 
 
   const { showToast } = useToast();
 
@@ -55,6 +55,11 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
   useEffect(() => {
     if (subteamId) fetchMembers();
   }, [subteamId]);
+
+  const handleCloseHeadTaskList = () => {
+    setIsHeadTaskListOpen(false);
+    fetchMembers(); // 🔥 REFRESHE DATA WHEN MODAL CLOSES
+  };
 
   const handleAddMember = async () => {
     if (!newMemberName.trim()) return showToast("Please enter a username", "error");
@@ -219,10 +224,13 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
                   <DatePicker 
                     selected={taskDeadline} 
                     onChange={(date) => setTaskDeadline(date)} 
-                    dateFormat="MMM d, yyyy"
+                    dateFormat="MMM d, yyyy h:mm aa"
                     className="custom-datepicker-input"
                     minDate={new Date()}
                     showPopperArrow={false}
+                    showTimeSelect
+                    timeFormat="HH:mm"
+                    timeIntervals={15}
                   />
                 </div>
 
@@ -248,12 +256,12 @@ export default function SubprojectMembersModal({ subteamId, onClose }) {
       {/* 🔥 HEAD TASK LIST MODAL (View & Respond to HQ) */}
       <HeadTaskListModal 
         isOpen={isHeadTaskListOpen}
-        onClose={() => setIsHeadTaskListOpen(false)}
+        onClose={handleCloseHeadTaskList} // 🔥 USE NEW CLOSING HANDLER
         tasks={headTasks}
         refreshData={fetchMembers}
       />
 
-      {/* 🔥 VIEW ALL RESPONSES (For Subteam Head to see sent history) */}
+      {/* VIEW ALL RESPONSES (For Subteam Head to see sent history) */}
       <ViewResponsesModal 
          isOpen={isMyResponsesOpen}
          onClose={() => setIsMyResponsesOpen(false)}
